@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Damageable
+  - p_origin
+  - projectile_origin
+  - neck
+  - projectile
+  - ammo_type_bolt
+  - ammo_type_disc
+  - collider_arms
+  - collider_head
+  - collider_neck
+  - collider_torso_top
+  - collider_torso_bottom
+  - collider_legs
+  - collider_foots
+  - enemy
+  - collider_left_foot
+  - collider_right_foot
+  - collider_left_leg_top
+  - collider_left_leg_bottom
+  - collider_right_leg_top
+  - collider_right_leg_bottom
+  - collider_right_arm
+  - collider_right_forearm
+  - collider_left_arm
+  - collider_left_forearm
+  - Physics Prop
+  - Enemy
+  - Level
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - YuME_TileMap
+  - player_player
+  - viewmodel
+  - projectiles
+  - player
+  - Enemy
+  - hitbox
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: gun
+    uniqueID: 1696346449
+    locked: 0

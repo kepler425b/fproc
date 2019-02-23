@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: c340d227850612e4e8d9ebc781f5da73
+timeCreated: 1512735802
+licenseType: Free
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - FireModule: {fileID: 114822493655227202, guid: 935382d8116c4da43bd54cec8d9e8dcd,
+      type: 2}
+  - anim: {instanceID: 0}
+  - projectile: {instanceID: 0}
+  - gunShotSound: {instanceID: 0}
+  - projectileSpawnPoint: {instanceID: 0}
+  - cameraTransform: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,308 @@
+fileFormatVersion: 2
+guid: d0e93e15a3db5e943a0d3d17fe4c3843
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Armature
+    100002: Body
+    100004: Magazine
+    100006: magazine
+    100008: magazine_end
+    100010: Piston
+    100012: root
+    100014: root_end
+    100016: //RootNode
+    100018: Spring
+    100020: stretch_along
+    100022: stretch_along_end
+    100024: stretch_target
+    100026: stretch_target_end
+    100028: Trigger
+    100030: trigger
+    100032: trigger_end
+    400000: Armature
+    400002: Body
+    400004: Magazine
+    400006: magazine
+    400008: magazine_end
+    400010: Piston
+    400012: root
+    400014: root_end
+    400016: //RootNode
+    400018: Spring
+    400020: stretch_along
+    400022: stretch_along_end
+    400024: stretch_target
+    400026: stretch_target_end
+    400028: Trigger
+    400030: trigger
+    400032: trigger_end
+    2100000: base
+    4300000: Body
+    4300002: Magazine
+    4300004: Piston
+    4300006: Spring
+    4300008: Trigger
+    7400000: Fire
+    7400002: Armature|Fire
+    9500000: //RootNode
+    13700000: Body
+    13700002: Magazine
+    13700004: Piston
+    13700006: Spring
+    13700008: Trigger
+    2186277476908879412: ImportLogs
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: base
+    second: {fileID: 2100000, guid: 1efdb91586b19fe45b5430918d69ac9e, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: "Invalid Avatar Rig Configuration. Missing or invalid transform:\n\tRequired
+      human bone 'RightLowerLeg' not found\n"
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Fire
+      takeName: Fire
+      firstFrame: 0
+      lastFrame: 11
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 0
+        functionName: SoundFire
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.34256598
+        functionName: SoundSpring
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.75097305
+        functionName: SoundPiston
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature|Fire
+      takeName: Armature|Fire
+      firstFrame: 0
+      lastFrame: 11
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton:
+    - name: smg(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Armature
+      parentName: smg(Clone)
+      position: {x: -0.3440339, y: 0.44351843, z: -0.9517475}
+      rotation: {x: 0.000000021855692, y: -1.1102229e-16, z: 1.110223e-16, w: 1}
+      scale: {x: 29.401222, y: 29.401222, z: 29.401222}
+    - name: root
+      parentName: Armature
+      position: {x: 0.0032478971, y: -0.00044389768, z: -0.009257821}
+      rotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: root_end
+      parentName: root
+      position: {x: -0, y: 0.09287611, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: magazine
+      parentName: Armature
+      position: {x: 0.0034403396, y: -0.049355533, z: 0.06677086}
+      rotation: {x: -0.18752068, y: -1.4372094e-23, z: 1.0105432e-23, w: 0.98226064}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: magazine_end
+      parentName: magazine
+      position: {x: -0, y: 0.041485034, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: stretch_target
+      parentName: Armature
+      position: {x: 0.003245443, y: 0.0016695035, z: 0.034520473}
+      rotation: {x: 0.7071068, y: -5.926936e-24, z: -2.1926357e-23, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: stretch_target_end
+      parentName: stretch_target
+      position: {x: -0, y: 0.023853015, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: stretch_along
+      parentName: Armature
+      position: {x: 0.003245443, y: 0.0016695069, z: 0.0013695621}
+      rotation: {x: 0.50000006, y: -0.49999994, z: -0.5, w: 0.5}
+      scale: {x: 0.9999999, y: 1, z: 0.9999999}
+    - name: stretch_along_end
+      parentName: stretch_along
+      position: {x: -0, y: 0.033150908, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: trigger
+      parentName: Armature
+      position: {x: 0.0034403396, y: -0.009806705, z: 0.014958504}
+      rotation: {x: 0.7071068, y: 0.00000009415696, z: -0.7071067, w: 0.00000009415697}
+      scale: {x: 1, y: 1, z: 1}
+    - name: trigger_end
+      parentName: trigger
+      position: {x: -0, y: 0.008324069, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Body
+      parentName: smg(Clone)
+      position: {x: -0.24288371, y: -3.7251208, z: 0.27596253}
+      rotation: {x: -0.7071068, y: -9.052031e-24, z: 7.957561e-24, w: 0.7071067}
+      scale: {x: 29.401222, y: 29.401222, z: 29.401222}
+    - name: Magazine
+      parentName: smg(Clone)
+      position: {x: -0.24288371, y: -3.7251208, z: 0.27596253}
+      rotation: {x: -0.7071068, y: -9.052031e-24, z: 7.957561e-24, w: 0.7071067}
+      scale: {x: 29.401222, y: 29.401222, z: 29.401222}
+    - name: Piston
+      parentName: smg(Clone)
+      position: {x: -0.24288371, y: -3.7251208, z: 0.27596253}
+      rotation: {x: -0.7071068, y: -9.052031e-24, z: 7.957561e-24, w: 0.7071067}
+      scale: {x: 29.401222, y: 29.401222, z: 29.401222}
+    - name: Spring
+      parentName: smg(Clone)
+      position: {x: -0.24288371, y: -3.7251208, z: 0.27596253}
+      rotation: {x: -0.7071068, y: -9.052031e-24, z: 7.957561e-24, w: 0.7071067}
+      scale: {x: 29.401222, y: 29.401222, z: 29.401222}
+    - name: Trigger
+      parentName: smg(Clone)
+      position: {x: -0.24288371, y: -3.7251208, z: 0.27596253}
+      rotation: {x: -0.7071068, y: -9.052031e-24, z: 7.957561e-24, w: 0.7071067}
+      scale: {x: 29.401222, y: 29.401222, z: 29.401222}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

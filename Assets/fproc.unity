@@ -1263,6 +1263,8 @@ MonoBehaviour:
   _playerReference: {fileID: 1082694436}
   _tickRate: 0.1
   _plane: {fileID: 734526809}
+  _playerCent: 32
+  _playerCent2: 1000
   smthPos: {x: 0, y: 0}
 --- !u!4 &1887991458
 Transform:

@@ -1,0 +1,10 @@
+# Ignore everything in this directory
+<<<<<<< HEAD
+/*
+# Except this file
+!.gitignore
+!README
+# Except folders
+
+!Assets/
+!ProjectSettings/

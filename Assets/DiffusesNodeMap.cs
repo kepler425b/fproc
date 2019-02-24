@@ -33,14 +33,14 @@ public class DiffusesNodeMap : MonoBehaviour
     Vector2Int lastPlayerPos;
     [SerializeField] Vector2Int smthPos;
 
-    int arrayWidth = 17; //(int)_plane.localScale.x * (int)_plane.localScale.y;
+    int arrayWidth = 16; //(int)_plane.localScale.x * (int)_plane.localScale.y;
     int AMIN, AMAX;
     float maxPValue = 10.0f;
     float spacing = 4.0f;
     int scaleAdjustion;
+    float ratio;
     IEnumerator IENodeIterator()
     {
-        diffuseNodeArray[Random.Range(1, 15), Random.Range(1, 15)].p = Random.Range(1, 50000);
         yield return new WaitForSeconds(2.0f);
     }
 
@@ -48,8 +48,8 @@ public class DiffusesNodeMap : MonoBehaviour
     {
         scaleAdjustion = (int)_plane.transform.localScale.x;
         Vector3 planePos = _plane.transform.position;
+        ratio = (float)scaleAdjustion / (float)arrayWidth;
         arrayWidth *= (int)(scaleAdjustion);
-        arrayWidth -= 4 * scaleAdjustion; //padding issues due to allocating 2d array with empty boundaries for safer iteration and clipping.
         AMIN = 1;
         AMAX = arrayWidth - 1;
 
@@ -60,22 +60,16 @@ public class DiffusesNodeMap : MonoBehaviour
         playerNode2.p = _playerCent2;
         playerPos = new Vector2Int(AMIN, AMIN);
         playerPos2 = new Vector2Int(AMAX, AMAX);
-        smthPos = new Vector2Int((int)(AMAX*0.5f), (int)(AMAX * 0.5f));
+        smthPos = new Vector2Int((int)(AMAX * 0.5f), (int)(AMAX * 0.5f));
         diffuseNodeArray = new DiffuseNode[arrayWidth, arrayWidth];
-        for (int z = AMIN; z < AMAX; z++)
+
+        for (int z = AMIN-1; z < AMAX+1; z++)
         {
-            for (int x = AMIN; x < AMAX; x++)
+            for (int x = AMIN-1; x < AMAX+1; x++)
             {
                 DiffuseNode t = new DiffuseNode();
-                t.wall = false;
-                if (x == AMAX / 2 && z != AMAX / 2)
-                {
-                    t.wall = true;
-                    t.diffusionFactor = 0;
-                }
-                t.diffusionFactor = 0.25f;
                 t.p = 1.0f;
-                t.position = new Vector3((planePos.x + (AMAX * 0.5f)) - x, planePos.y, (planePos.z + (AMAX * 0.5f)) - z);
+                t.position = new Vector3((planePos.x + ((AMAX * 0.5f * ratio) - x * ratio)), planePos.y, (planePos.z + ((AMAX * 0.5f * ratio) - z * ratio)));
                 diffuseNodeArray[z, x] = t;
             }
         }
@@ -184,7 +178,8 @@ public class DiffusesNodeMap : MonoBehaviour
                 _topPValueNode = getHighestNeighbour(z, x);
 
                 Color c = new Color(1 - (t.p / maxPValue), (t.p / maxPValue), 0, 1);
-                Debug.DrawLine(t.position, t.position + Vector3.up * t.p * 100.0f, c, 0.1f);
+                if(result.p > 0.5f)
+                Debug.DrawLine(result.position, result.position + Vector3.up * result.p, c, 0.1f);
             }
         }
         Mathf.Clamp(smthPos.x, AMIN, AMAX);
@@ -257,6 +252,13 @@ public class DiffusesNodeMap : MonoBehaviour
             Gizmos.DrawSphere(diffuseNodeArray[smthPos.y, smthPos.x].position, 1.0f);
             Gizmos.color = Color.grey;
             Gizmos.DrawSphere(tnode.position, 1.0f);
+
+            //boundaries
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawCube(diffuseNodeArray[AMIN, AMIN].position + Vector3.up * 2.5f, new Vector3(1, 5, 1));
+            Gizmos.DrawCube(diffuseNodeArray[AMAX, AMAX].position + Vector3.up * 2.5f, new Vector3(1, 5, 1));
+            Gizmos.DrawCube(diffuseNodeArray[AMIN, AMAX].position + Vector3.up * 2.5f, new Vector3(1, 5, 1));
+            Gizmos.DrawCube(diffuseNodeArray[AMAX, AMIN].position + Vector3.up * 2.5f, new Vector3(1, 5, 1));
         }
     }
 }

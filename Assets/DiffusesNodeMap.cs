@@ -8,9 +8,36 @@ public class DiffusesNodeMap : MonoBehaviour
     [SerializeField] DiffuseNode _topPValueNode;
     [SerializeField] float _tickRate = 0.1f;
     [SerializeField] Transform _plane;
-    [SerializeField] float _playerCent = 32f;
-    [SerializeField] float _playerCent2 = 1000.0f;
+    [SerializeField] float _playerCent = 5f;
+    [SerializeField] float _playerCent2 = 10.0f;
+    [SerializeField] DiffuseNodeExternal[] _objects;
+
+    public class Debug2String
+    {
+        public Vector3 pos;
+        public string text;
+        public Color? color;
+        public float eraseTime;
+    }
+
+    public List<Debug2String> Strings = new List<Debug2String>();
+
     private float tickTimer = 0;
+
+    struct TransformNodeSettings
+    {
+        public float PValue;
+    }
+
+    [System.Serializable]
+    public class DiffuseNodeExternal : System.Object
+    {
+        public Transform transform;
+        public string name;
+        public float p;
+        public Vector2Int index;
+        public Color color;
+    }
 
     public struct DiffuseNode
     {
@@ -27,60 +54,130 @@ public class DiffusesNodeMap : MonoBehaviour
     };
 
     DiffuseNode[,] diffuseNodeArray;
+    List<DiffuseNodeExternal> diffuseNodeArrayExternal;
     DiffuseNode playerNode, playerNode2;
     DiffuseNode tnode;
     Vector2Int playerPos, playerPos2;
     Vector2Int lastPlayerPos;
     [SerializeField] Vector2Int smthPos;
 
-    int arrayWidth = 16; //(int)_plane.localScale.x * (int)_plane.localScale.y;
-    int AMIN, AMAX;
-    float maxPValue = 10.0f;
-    float spacing = 4.0f;
-    int scaleAdjustion;
+    public int ARRAY_WIDTH = 4;
+    public int AMAX, AMIN;
+    float maxPValue = 10f;
     float ratio;
-    IEnumerator IENodeIterator()
-    {
-        yield return new WaitForSeconds(2.0f);
-    }
+    int density = 18;
+    float planeScale;
 
     void Start()
     {
-        scaleAdjustion = (int)_plane.transform.localScale.x;
-        Vector3 planePos = _plane.transform.position;
-        ratio = (float)scaleAdjustion / (float)arrayWidth;
-        arrayWidth *= (int)(scaleAdjustion);
-        AMIN = 1;
-        AMAX = arrayWidth - 1;
+        diffuseNodeArrayExternal = new List<DiffuseNodeExternal>();
+        foreach (DiffuseNodeExternal t in _objects)
+        {
+            DiffuseNodeExternal n = new DiffuseNodeExternal();
+            Vector2Int vec = new Vector2Int((int)t.transform.position.z, (int)t.transform.position.x);
+            n.transform = t.transform;
+            n.name = t.transform.name;
+            n.index = ClampIn2DArray(vec);
+            n.p = t.p;
+            n.color = Color.yellow;
+            diffuseNodeArrayExternal.Add(n);
+        }
 
-        //_playerReference = FindObjectOfType<PlayerLogic>();
-        //if (!_playerReference) Debug.LogError("Player reference not set.");
+        ARRAY_WIDTH = 20;
+        //planeScale = (int)_plane.transform.localScale.x;
+        Vector3 planePos = _plane.transform.position;
+        _plane.transform.localScale = new Vector3((float)ARRAY_WIDTH/10f, 1, (float)ARRAY_WIDTH/10f);
+        //ratio = (float)planeScale / (float)ARRAY_WIDTH;
+        AMIN = 2;
+        AMAX = ARRAY_WIDTH - 2;
+       
+        diffuseNodeArray = new DiffuseNode[ARRAY_WIDTH, ARRAY_WIDTH];
 
         playerNode.p = _playerCent;
         playerNode2.p = _playerCent2;
         playerPos = new Vector2Int(AMIN, AMIN);
         playerPos2 = new Vector2Int(AMAX, AMAX);
         smthPos = new Vector2Int((int)(AMAX * 0.5f), (int)(AMAX * 0.5f));
-        diffuseNodeArray = new DiffuseNode[arrayWidth, arrayWidth];
 
-        for (int z = AMIN-1; z < AMAX+1; z++)
+        int AMIN_TEMP = AMIN - 2;
+        int AMAX_TEMP = AMAX + 2;
+
+        for (int z = AMIN_TEMP; z < AMAX_TEMP; z++)
         {
-            for (int x = AMIN-1; x < AMAX+1; x++)
+            for (int x = AMIN_TEMP; x < AMAX_TEMP; x++)
             {
                 DiffuseNode t = new DiffuseNode();
                 t.p = 1.0f;
-                t.position = new Vector3((planePos.x + ((AMAX * 0.5f * ratio) - x * ratio)), planePos.y, (planePos.z + ((AMAX * 0.5f * ratio) - z * ratio)));
+                t.diffusionFactor = 1.0f;
+                if (x == AMAX_TEMP / 2)
+                    t.diffusionFactor = 0f;
+
+                if (x == AMAX_TEMP)
+                    t.diffusionFactor = 0f;
+
+                if (z == AMIN_TEMP)
+                    t.diffusionFactor = 0f;
+
+                t.position = new Vector3((planePos.x + (AMAX_TEMP * 0.5f) - x), planePos.y, (planePos.z + (AMAX_TEMP * 0.5f) - z));
                 diffuseNodeArray[z, x] = t;
             }
         }
-        //diffuseNodeArray[1, 1].p = 10f;
-       // StartCoroutine(IENodeIterator());
     }
-    
 
-    public bool getNeigbours(out DiffuseNodeNeighbours result, int z, int x)
+    public static void DrawText(Vector3 pos, string text, Color? color = null)
     {
-        if (x < AMAX && x > AMIN && z < AMAX && z > AMIN)
+        instance.Strings.Add(new Debug2Mono.Debug2String() { text = text, color = color, pos = pos, eraseTime = Time.time + 0.2f, });
+        List<Debug2Mono.Debug2String> toBeRemoved = new List<Debug2Mono.Debug2String>();
+        foreach (var item in instance.Strings)
+        {
+            if (item.eraseTime <= Time.time)
+                toBeRemoved.Add(item);
+        }
+        foreach (var rem in toBeRemoved)
+            instance.Strings.Remove(rem);
+    }
+
+    void MoveIn2DArray(ref Vector2Int input)
+    {
+        if (Input.GetKey(KeyCode.RightArrow)) input.x += 1;
+        if (Input.GetKey(KeyCode.LeftArrow))  input.x -= 1;
+        if (Input.GetKey(KeyCode.DownArrow))  input.y -= 1;
+        if (Input.GetKey(KeyCode.UpArrow))    input.y += 1;
+        ClampIn2DArray(ref input);
+    }
+
+    void MapVectorIn2DArray(Vector3 input, float PValue)
+    {
+        Vector2Int t = new Vector2Int((int)input.x, (int)input.z);
+        ClampIn2DArray(ref t);
+        diffuseNodeArray[t.y, t.x].p = PValue;
+    }
+
+    void ClampIn2DArray(ref Vector2Int input)
+    {
+        input.x = Mathf.Clamp(input.x, AMIN, AMAX);
+        input.y = Mathf.Clamp(input.y, AMIN, AMAX);
+    }
+
+    Vector2Int ClampIn2DArray(Vector2Int input)
+    {
+        Vector2Int result = new Vector2Int();
+        result.x = Mathf.Clamp(input.x, AMIN, AMAX);
+        result.y = Mathf.Clamp(input.y, AMIN, AMAX);
+        return result;
+    }
+
+    Vector2Int ClampIn2DArray(float x, float y)
+    {
+        Vector2Int result = new Vector2Int();
+        result.x = Mathf.Clamp((int)x, AMIN, AMAX);
+        result.y = Mathf.Clamp((int)y, AMIN, AMAX);
+        return result;
+    }
+
+    public bool getNeighbours(out DiffuseNodeNeighbours result, int z, int x)
+    {
+        if (x <= AMAX && x >= AMIN && z <= AMAX && z >= AMIN)
         {
             result.left = diffuseNodeArray[z, x - 1];
             result.left.index = new Vector2Int(z, x - 1);
@@ -94,23 +191,22 @@ public class DiffusesNodeMap : MonoBehaviour
         }
         else
         {
-            DiffuseNode n = new DiffuseNode();
+            Debug.LogError("Neighbour out of bound.");
             result = new DiffuseNodeNeighbours();
-            n.index = new Vector2Int(1, 1);
-            result.down = n;
-            result.up = n;
-            result.right = n;
-            result.left = n;
             return false;
         }
     }
 
     public DiffuseNode getHighestNeighbour(int z, int x)
     {
+        if(z > AMAX || z < AMIN || x > AMAX || x < AMIN)
+        {
+            Debug.LogError("Max index reached.");
+        }
         DiffuseNode result = new DiffuseNode();
         DiffuseNode centerNode = diffuseNodeArray[z, x];
         DiffuseNodeNeighbours n;
-        getNeigbours(out n, z, x);
+        getNeighbours(out n, z, x);
 
         float topPValue = 0;
         Vector2Int topPIndex = new Vector2Int();
@@ -159,86 +255,60 @@ public class DiffusesNodeMap : MonoBehaviour
     {
         tickTimer += Time.deltaTime;
 
-        for (int z = AMIN; z < AMAX; z++)
+        for (int z = AMIN; z <= AMAX; z++)
         {
-            for (int x = AMIN; x < AMAX; x++)
+            for (int x = AMIN; x <= AMAX; x++)
             {
                 DiffuseNode t = diffuseNodeArray[z, x];
 
                 DiffuseNodeNeighbours n;
-                getNeigbours(out n, z, x);
+                getNeighbours(out n, z, x);
 
                 DiffuseNode result = new DiffuseNode();
                 result.position = t.position;
-                float d = 0.05f;
-                float psum = ((n.left.p - t.p)) + ((n.right.p - t.p)) + ((n.up.p - t.p)) + ((n.down.p - t.p));
-                result.p = d * psum;
+                float d = t.diffusionFactor;
+                //float psum = ((n.left.p - t.p)) + ((n.right.p - t.p)) + ((n.up.p - t.p)) + ((n.down.p - t.p));
+                float psum = n.left.p + n.right.p + n.up.p + n.down.p;
+                result.p = d * 0.25f * psum;
                 result.diffusionFactor = t.diffusionFactor;
                 diffuseNodeArray[z, x] = result;
-                _topPValueNode = getHighestNeighbour(z, x);
+                //_topPValueNode = getHighestNeighbour(z, x);
 
                 Color c = new Color(1 - (t.p / maxPValue), (t.p / maxPValue), 0, 1);
-                if(result.p > 0.5f)
-                Debug.DrawLine(result.position, result.position + Vector3.up * result.p, c, 0.1f);
+                if (result.p > 0.05f)
+                    Debug.DrawLine(result.position, result.position + Vector3.up * result.p, c, 0.1f);
             }
         }
-        Mathf.Clamp(smthPos.x, AMIN, AMAX);
-        Mathf.Clamp(smthPos.y, AMIN, AMAX);
-    
-        lastPlayerPos = playerPos; 
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            if (playerPos.x + 1 < AMAX) playerPos.x += 1;
-        }
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            if (playerPos.x - 1 >= AMIN) playerPos.x -= 1;
-        }
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            if (playerPos.y - 1 >= AMIN) playerPos.y -= 1;
-        }
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            if (playerPos.y + 1 < AMAX) playerPos.y += 1;
-        }
-        diffuseNodeArray[playerPos.y, playerPos.x].p = _playerCent;
-        //diffuseNodeArray[lastPlayerPos.y, lastPlayerPos.x].p = 0f;
 
-        Debug.DrawLine(diffuseNodeArray[smthPos.y, smthPos.x].position,
-            diffuseNodeArray[smthPos.y, smthPos.x].position + Vector3.Normalize(tnode.position - diffuseNodeArray[smthPos.y, smthPos.x].position) * tnode.p, Color.blue);
-        //Debug.Log("playerPos: " + playerPos.y + ", " + playerPos.x);
+        for (int i = 0; i < diffuseNodeArrayExternal.Count; i++)
+        {
+            DiffuseNodeExternal n = diffuseNodeArrayExternal[i];
+            //n.transform = diffuseNodeArrayExternal[i].transform;
+            n.p = diffuseNodeArrayExternal[i].p;
+            Vector2Int index = ClampIn2DArray(Mathf.Abs(diffuseNodeArrayExternal[i].transform.position.x) + AMAX * 0.5f, Mathf.Abs(diffuseNodeArrayExternal[i].transform.position.y) + AMAX * 0.5f);
+            n.index = index;
+            float xx = index.x;
+            float yy = index.y;
+            diffuseNodeArray[index.x, index.y].p = n.p;
+        }
+
+
+        MoveIn2DArray(ref playerPos);
+        diffuseNodeArray[playerPos.y, playerPos.x].p = _playerCent;
 
         if (tickTimer >= _tickRate)
         {
+            ClampIn2DArray(ref smthPos);
             tnode = getHighestNeighbour(smthPos.y, smthPos.x);
             smthPos.y = tnode.index.y;
             smthPos.x = tnode.index.x;
-            //Debug.Log("smthPos: " + smthPos.y + ", " + smthPos.x);
             tickTimer = 0;
 
-            bool s = Random.Range(0, 16) != 0;
-            if (s)
-            {
-                if (playerPos2.x + 1 < AMAX) playerPos2.x += 1;
-            }
-            s = Random.Range(0, 18) != 0;
-            if (s)
-            {
-                if (playerPos2.x - 1 >= AMIN) playerPos2.x -= 1;
-            }
-            s = Random.Range(0, 17) != 0;
-            if (s)
-            {
-                if (playerPos2.y - 1 >= AMIN) playerPos2.y -= 1;
-            }
-            s = Random.Range(0, 20) != 0;
-            if (s)
-            {
-                if (playerPos2.y + 1 < AMAX) playerPos2.y += 1;
-            }
             diffuseNodeArray[playerPos2.y, playerPos2.x].p = _playerCent2;
         }
+        Debug.DrawLine(diffuseNodeArray[smthPos.y, smthPos.x].position,
+            diffuseNodeArray[smthPos.y, smthPos.x].position + Vector3.Normalize(tnode.position - diffuseNodeArray[smthPos.y, smthPos.x].position) * tnode.p, Color.blue);
+
     }
 
     void OnDrawGizmos()
@@ -259,6 +329,45 @@ public class DiffusesNodeMap : MonoBehaviour
             Gizmos.DrawCube(diffuseNodeArray[AMAX, AMAX].position + Vector3.up * 2.5f, new Vector3(1, 5, 1));
             Gizmos.DrawCube(diffuseNodeArray[AMIN, AMAX].position + Vector3.up * 2.5f, new Vector3(1, 5, 1));
             Gizmos.DrawCube(diffuseNodeArray[AMAX, AMIN].position + Vector3.up * 2.5f, new Vector3(1, 5, 1));
+
+            foreach (DiffuseNodeExternal n in diffuseNodeArrayExternal)
+            {
+                Vector3 scale = new Vector3(2, 2, 2);
+                Gizmos.DrawCube(diffuseNodeArray[n.index.y, n.index.x].position, scale);
+                DrawText(diffuseNodeArray[n.index.y, n.index.x].position, n.name, Color.white);
+                DrawText(diffuseNodeArray[n.index.y, n.index.x].position + Vector3.up * 4.0f, n.index.ToString(), Color.blue);
+                DrawText(diffuseNodeArray[n.index.y, n.index.x].position + Vector3.up * 12.0f, n.transform.position.ToString(), Color.red);
+                DrawText(diffuseNodeArray[n.index.y, n.index.x].position + Vector3.up * 12.0f, n.transform.position.ToString(), Color.red);
+            }
+        }
+        foreach (var stringpair in Strings)
+        {
+            GUIStyle style = new GUIStyle();
+            style.fontSize = 32;
+            Color color = stringpair.color.HasValue ? stringpair.color.Value : Color.green;
+            style.normal.textColor = color;
+#if UNITY_EDITOR
+            UnityEditor.Handles.color = color;
+            UnityEditor.Handles.Label(stringpair.pos, stringpair.text, style);
+#endif
+        }
+    }
+
+    private static Debug2Mono m_instance;
+    public static Debug2Mono instance
+    {
+        get
+        {
+            if (m_instance == null)
+            {
+                m_instance = GameObject.FindObjectOfType<Debug2Mono>();
+                if (m_instance == null)
+                {
+                    var go = new GameObject("DeleteMeLater");
+                    m_instance = go.AddComponent<Debug2Mono>();
+                }
+            }
+            return m_instance;
         }
     }
 }

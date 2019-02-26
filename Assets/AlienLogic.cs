@@ -27,6 +27,8 @@ public class AlienLogic : MonoBehaviour
     [SerializeField] float _maxHitDelta = 0.1f;
     [SerializeField] float timeBetweenHits;
     [SerializeField] Transform _dummyObject;
+    [SerializeField] DiffusesNodeMap _diffuseNodeMap;
+
     [Range(2, 20)]
     [SerializeField] public float _avoidanceRange;
 
@@ -62,10 +64,14 @@ public class AlienLogic : MonoBehaviour
     Node behaviourTree;
     public Context behaviourState;
 
+    //NPCManager init
+    NPCManager.NPCNavInfo info = new NPCManager.NPCNavInfo();
+
     private void Awake()
     {
         NPCManager = FindObjectOfType<NPCManager>();
         if (NPCManager == null) Debug.LogError("NPCManager is null");
+        _diffuseNodeMap = FindObjectOfType<DiffusesNodeMap>();
     }
 
     void Start()
@@ -81,6 +87,9 @@ public class AlienLogic : MonoBehaviour
         }
         if (!_agentTarget) _agentTarget = FindObjectOfType<CPMovement>().transform;
 
+        NPCManager = FindObjectOfType<NPCManager>();
+
+        _diffuseNodeMap = FindObjectOfType<DiffusesNodeMap>();
         skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
         _animator = GetComponent<Animator>();
@@ -97,6 +106,10 @@ public class AlienLogic : MonoBehaviour
         behaviourState.me = this;
         behaviourTree = CreateBehaviourTree();
         behaviourState._originalRadius = _NPCAgent.stoppingDistance;
+
+        info.avoidanceRange = _avoidanceRange;
+        info.scriptReference = this;
+        NPCManager._NPCList.Add(info);
     }
 
     Node CreateBehaviourTree()
@@ -112,7 +125,7 @@ public class AlienLogic : MonoBehaviour
         Selector fightOrFlight = new Selector("fightOrFlight",
             attackEnemy, moveRandomly);
 
-        Repeater repeater = new Repeater(attackEnemy);
+        Repeater repeater = new Repeater(moveRandomly);
 
         return repeater;
     }
@@ -134,6 +147,16 @@ public class AlienLogic : MonoBehaviour
         {
             ///if(!_NPCAgent.hasPath)
             _NPCAgent.SetDestination(behaviourState.moveTarget);
+        }
+    }
+
+    public void MoveForwardDiffuseMap(bool state)
+    {
+        Debug.Log("_NPCAgent.hasPath: " + _NPCAgent.hasPath);
+        if (state)
+        {
+            Vector3 p = _diffuseNodeMap.getHighestNodePosition(transform.position);
+            _NPCAgent.SetDestination(p);
         }
     }
 
@@ -187,6 +210,7 @@ public class AlienLogic : MonoBehaviour
 
     void FixedUpdate()
     {
+        transform.position = _diffuseNodeMap.ClampIn2DArray(transform.position);
         behaviourTree.Behave(behaviourState);
         foreach (NPCManager.NPCNavInfo p in NPCManager._NPCList)
         {

@@ -16,7 +16,7 @@ public class PlayerLogic : MonoBehaviour
     [SerializeField] Transform _camera;
     [SerializeField] CanvasRenderer _crScreenOverlay;
     [SerializeField] CanvasRenderer _crHUD;
-    [SerializeField] DiffusesNodeMap _DiffuseMapDebugHandle;
+    [SerializeField] DiffusesNodeMap _diffuseNodeMap;
     [SerializeField] Text textHP;
     [SerializeField] AudioSource _audioSource;
     [SerializeField] AudioClip _damage_scream0;
@@ -45,15 +45,6 @@ public class PlayerLogic : MonoBehaviour
         _audioSource.Play();
     }
 
-    Vector3 ClampIn2DArray(Vector3 input)
-    {;
-        Vector3 result = new Vector3();
-        result.x = Mathf.Clamp(input.x, _DiffuseMapDebugHandle.AMIN * -10.0f * 0.5f, _DiffuseMapDebugHandle.AMAX * 0.5f);
-        result.y = input.y;
-        result.z = Mathf.Clamp(input.z, _DiffuseMapDebugHandle.AMIN * -10.0f * 0.5f, _DiffuseMapDebugHandle.AMAX * 0.5f);
-        return result;
-    }
-
     Color hitEffectColor;
     float hitColorAlphaFactor;
     float lastHitTime = 0.0f;
@@ -70,7 +61,7 @@ public class PlayerLogic : MonoBehaviour
             _crScreenOverlay.gameObject.SetActive(true);
         }
         movementController = GetComponent<CPMovement>();
-        _DiffuseMapDebugHandle = FindObjectOfType<DiffusesNodeMap>();
+        _diffuseNodeMap = FindObjectOfType<DiffusesNodeMap>();
     }
 
     void OnAwake()
@@ -94,7 +85,7 @@ public class PlayerLogic : MonoBehaviour
             }
         }
 
-        transform.position = ClampIn2DArray(transform.position);
+        transform.position = _diffuseNodeMap.ClampIn2DArray(transform.position);
 
         textHP.text = _health.ToString();
 

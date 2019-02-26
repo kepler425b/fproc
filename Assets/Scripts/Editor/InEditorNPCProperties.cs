@@ -6,7 +6,7 @@ public class InEditorNPCPropertiest : Editor
 {
     public override void OnInspectorGUI()
     {
-        //base.OnInspectorGUI();
+        base.OnInspectorGUI();
         AlienLogic script = (AlienLogic)target;
      
         if (GUILayout.Button("Set as Target"))
@@ -14,6 +14,6 @@ public class InEditorNPCPropertiest : Editor
             script.NPCManager.SetTarget(Selection.activeGameObject.transform.position);
         }
 
-        GUILayout.Label("Offset from others: " + script.behaviourState.offsetFromOther);
+        //GUILayout.Label("Offset from others: " + script.behaviourState.offsetFromOther);
     }
 }

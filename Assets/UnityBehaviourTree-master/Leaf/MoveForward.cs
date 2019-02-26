@@ -11,7 +11,7 @@ public class MoveForward : Leaf
         if (context.enemy == null)
             return NodeStatus.FAILURE;
 
-        context.me.MoveForward(true);
+        context.me.MoveForwardDiffuseMap(true);
 
         return NodeStatus.SUCCESS;
     }

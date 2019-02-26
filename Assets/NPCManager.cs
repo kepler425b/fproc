@@ -17,7 +17,8 @@ public class NPCManager : MonoBehaviour
     [Range(2, 10)]
     [SerializeField] float _randomAvoidanceRange = 0.0f;
     [SerializeField] bool Randomize = true;
-    [SerializeField] bool _debugAvoidanceRange;
+    [SerializeField] bool _debugAvoidanceRange = false;
+    [SerializeField] bool _enableDebug = true;
     [SerializeField] bool _debugTargetPoint = true;
     [SerializeField] bool _setRandomTargetForAll = false;
     [SerializeField] Transform _plane;
@@ -92,13 +93,16 @@ public class NPCManager : MonoBehaviour
 
     public void OnDrawGizmos()
     {
-        if (_debugAvoidanceRange)
+        if (_enableDebug)
         {
             foreach (NPCNavInfo child in _NPCList)
             {
                 if (child.scriptReference)
                 {
-                    Gizmos.DrawWireSphere(child.position, child.avoidanceRange);
+                    if (_debugAvoidanceRange)
+                    {
+                        Gizmos.DrawWireSphere(child.position, child.avoidanceRange);
+                    }
                     Gizmos.DrawLine(child.position, child.scriptReference._NPCAgent.destination);
                     Gizmos.DrawSphere(child.scriptReference._NPCAgent.destination, 0.1f);
                     if (_debugTargetPoint)

@@ -155,8 +155,9 @@ public class AlienLogic : MonoBehaviour
         Debug.Log("_NPCAgent.hasPath: " + _NPCAgent.hasPath);
         if (state)
         {
-            Vector3 p = _diffuseNodeMap.getHighestNodePosition(transform.position);
-            _NPCAgent.SetDestination(p);
+            //Vector3 p = _diffuseNodeMap.getHighestNodePosition(transform.position);
+            Vector3 dir = _diffuseNodeMap.getHighestNodeDirection(transform.position);
+            _NPCAgent.SetDestination(transform.position + dir);
         }
     }
 
@@ -228,9 +229,9 @@ public class AlienLogic : MonoBehaviour
             {
                 //optimalPosition = _NPCAgent.transform.position;
                 //Vector3 direction = -Vector3.Normalize(p.position - transform.position);
-                Debug.DrawLine(transform.position + Vector3.up * 2.0f, (transform.position + Vector3.up * 2.0f) + direction, Color.red);
+                //Debug.DrawLine(transform.position + Vector3.up * 2.0f, (transform.position + Vector3.up * 2.0f) + direction, Color.red);
                 p.scriptReference.behaviourState.offsetFromOther = transform.position + Vector3.Normalize(_NPCAgent.transform.position - optimalPosition2);
-                Debug.DrawLine(transform.position + Vector3.up * 4.0f, Vector3.up * 4.0f + behaviourState.offsetFromOther * distance, Color.magenta);
+                //Debug.DrawLine(transform.position + Vector3.up * 4.0f, Vector3.up * 4.0f + behaviourState.offsetFromOther * distance, Color.magenta);
             }
             //else behaviourState.offsetFromOther = Vector3.zero;
         }

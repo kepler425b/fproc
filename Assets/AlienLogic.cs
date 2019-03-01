@@ -220,7 +220,7 @@ public class AlienLogic : MonoBehaviour
 
             float distance = Vector3.Distance(_NPCAgent.transform.position, otherPos);
             Vector3 direction = Vector3.Normalize(p.position - _NPCAgent.transform.position);
-            Debug.DrawLine(transform.position + Vector3.up * 2.0f, (transform.position + Vector3.up * 2.0f) + direction * distance, Color.red);
+            //Debug.DrawLine(transform.position + Vector3.up * 2.0f, (transform.position + Vector3.up * 2.0f) + direction * distance, Color.red);
 
             Vector3 optimalPosition = _NPCAgent.transform.position;
             Vector3 optimalPosition2 = p.scriptReference._NPCAgent.transform.position;

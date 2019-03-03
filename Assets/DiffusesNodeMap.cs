@@ -12,6 +12,7 @@ public class DiffusesNodeMap : MonoBehaviour
     [SerializeField] float _playerCent2 = 10.0f;
     [SerializeField] DiffuseNodeExternal[] _objects;
     [SerializeField] bool _debugDiffuseMap = false;
+    [SerializeField] bool showNodeProperties = false;
     [Range(0.0f, 200.0f)]
     [SerializeField] float diffuseFactor =  10f;
     [Range(0.0f, 200.0f)]
@@ -64,6 +65,17 @@ public class DiffusesNodeMap : MonoBehaviour
         public DiffuseNode left, right, up, down;
     };
 
+    public struct ArrayInfo
+    {
+        public int ARRAY_WIDTH;
+        public int ARRAY_HALF_WIDTH;
+        public int ARRAY_MAX;
+        public int ARRAY_MIN;
+        public int ACTUAL_ARRAY_WIDTH;
+    }
+
+    ArrayInfo arrayInfo;
+
     DiffuseNode[,] diffuseNodeArray;
     List<DiffuseNodeExternal> diffuseNodeArrayExternal;
     DiffuseNode playerNode, playerNode2;
@@ -72,15 +84,13 @@ public class DiffusesNodeMap : MonoBehaviour
     Vector2Int lastPlayerPos;
     [SerializeField] Vector2Int smthPos;
 
-    public int ARRAY_WIDTH = 4;
-    public int AMAX, AMIN;
     public float maxPValue = 10f;
     float ratio;
-    int density = 18;
     float planeScale;
     Vector3 planePos;
     int[,] Map;
     Texture2D planeTexture;
+    float gizmoCubeOffsetToCenter = 0.5f;
 
     private void OnValidate()
     {
@@ -91,8 +101,7 @@ public class DiffusesNodeMap : MonoBehaviour
     {
         planeMeshRenderer = _plane.transform.GetComponent<MeshRenderer>();
         planeMeshMaterial = planeMeshRenderer.material;
-        planeTexture = new Texture2D(AMAX, AMAX);
-        Map = new [,]{
+        Map = new int[,] {
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             { 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             { 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -106,9 +115,9 @@ public class DiffusesNodeMap : MonoBehaviour
             { 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             { 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             { 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             { 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             { 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             { 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -125,7 +134,7 @@ public class DiffusesNodeMap : MonoBehaviour
             { 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             { 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-        };
+    };
 
         diffuseNodeArrayExternal = new List<DiffuseNodeExternal>();
         foreach (DiffuseNodeExternal t in _objects)
@@ -140,61 +149,23 @@ public class DiffusesNodeMap : MonoBehaviour
             diffuseNodeArrayExternal.Add(n);
         }
 
-        
+        arrayInfo.ARRAY_WIDTH = Map.GetLength(0);
+        arrayInfo.ARRAY_MIN = 1;
+        arrayInfo.ARRAY_MAX = arrayInfo.ARRAY_WIDTH;
+        arrayInfo.ARRAY_HALF_WIDTH = arrayInfo.ARRAY_WIDTH / 2;
+        arrayInfo.ACTUAL_ARRAY_WIDTH = arrayInfo.ARRAY_WIDTH + 2; //map size + boundaries
 
-        //planeScale = (int)_plane.transform.localScale.x;
-        planePos = _plane.transform.position;
-        _plane.transform.localScale = new Vector3((float)ARRAY_WIDTH/10f, 1, (float)ARRAY_WIDTH/10f);
-        _plane.transform.position = new Vector3(
-            _plane.transform.position.x + ARRAY_WIDTH * 0.5f, 
-            _plane.transform.position.y, 
-            _plane.transform.position.z + ARRAY_WIDTH * 0.5f);
 
-        //ratio = (float)planeScale / (float)ARRAY_WIDTH;
-        AMIN = 2;
-        AMAX = ARRAY_WIDTH - 2;
-       
-        diffuseNodeArray = new DiffuseNode[ARRAY_WIDTH, ARRAY_WIDTH];
-
-        int AMIN_TEMP = AMIN - 2;
-        int AMAX_TEMP = AMAX + 2;
-
+        planeTexture = new Texture2D(arrayInfo.ARRAY_WIDTH, arrayInfo.ARRAY_WIDTH);
+        diffuseNodeArray = new DiffuseNode[arrayInfo.ACTUAL_ARRAY_WIDTH, arrayInfo.ACTUAL_ARRAY_WIDTH];
         ConvertMapTo2DArray(Map, ref diffuseNodeArray);
 
-        foreach (Transform t in bakeObjects)
-        {
-            Vector2Int index = new Vector2Int();
-            Vector2Int scale = new Vector2Int((int)transform.localScale.x, (int)transform.localScale.y);
-            for (int y = 0; y < scale.y; y++)
-            {
-                for (int x = 0; x < scale.x; x++)
-                {
-                    index = ClampIn2DArray(t.transform.position.x + (scale.x - x), t.transform.position.y + (scale.y - y));
-                    diffuseNodeArray[index.y, index.x].wall = true;
-                }
-            }
-
-        }
-        //for (int z = AMAX_TEMP-1; z > AMIN_TEMP; z--)
-        //{
-        //    for (int x = AMAX_TEMP-1; x > AMIN_TEMP; x--)
-        //    {
-        //        DiffuseNode t = new DiffuseNode();
-        //        t.p = 1.0f;
-        //        t.diffusionFactor = 1.0f;
-        //        //if (x == AMAX_TEMP / 2)
-        //            //t.diffusionFactor = 0f;
-
-        //        if (x == AMAX_TEMP)
-        //            t.diffusionFactor = 0f;
-
-        //        if (z == AMIN_TEMP)
-        //            t.diffusionFactor = 0f;
-
-        //        t.position = new Vector3(planePos.x + x, planePos.y, planePos.z + z);
-        //        diffuseNodeArray[z, x] = t;
-        //    }
-        //}
+        planePos = _plane.transform.position;
+        _plane.transform.localScale = new Vector3((float)arrayInfo.ARRAY_WIDTH / 10f, 1, (float)arrayInfo.ARRAY_WIDTH / 10f);
+        //_plane.transform.position = new Vector3(
+        //    _plane.transform.position.x + arrayInfo.ARRAY_MAX * 0.5f,
+        //    _plane.transform.position.y,
+        //    _plane.transform.position.z + arrayInfo.ARRAY_MAX * 0.5f);
     }
 
     public static void DrawText(Vector3 pos, string text, Color? color = null)
@@ -228,23 +199,23 @@ public class DiffusesNodeMap : MonoBehaviour
 
     void ClampIn2DArray(ref Vector2Int input)
     {
-        input.x = Mathf.Clamp(input.x, AMIN, AMAX);
-        input.y = Mathf.Clamp(input.y, AMIN, AMAX);
+        input.x = Mathf.Clamp(input.x, -arrayInfo.ARRAY_HALF_WIDTH, arrayInfo.ARRAY_HALF_WIDTH - 2) + arrayInfo.ARRAY_HALF_WIDTH;
+        input.y = Mathf.Clamp(input.y, -arrayInfo.ARRAY_HALF_WIDTH, arrayInfo.ARRAY_HALF_WIDTH - 2) + arrayInfo.ARRAY_HALF_WIDTH;
     }
 
     Vector2Int ClampIn2DArray(Vector2Int input)
     {
         Vector2Int result = new Vector2Int();
-        result.x = Mathf.Clamp(input.x, AMIN, AMAX);
-        result.y = Mathf.Clamp(input.y, AMIN, AMAX);
+        result.x = Mathf.Clamp(input.x, -arrayInfo.ARRAY_HALF_WIDTH, arrayInfo.ARRAY_HALF_WIDTH - 2) + arrayInfo.ARRAY_HALF_WIDTH;
+        result.y = Mathf.Clamp(input.y, -arrayInfo.ARRAY_HALF_WIDTH, arrayInfo.ARRAY_HALF_WIDTH - 2) + arrayInfo.ARRAY_HALF_WIDTH;
         return result;
     }
 
     Vector2Int ClampIn2DArray(float x, float y)
     {
         Vector2Int result = new Vector2Int();
-        result.x = Mathf.Clamp((int)x, AMIN, AMAX);
-        result.y = Mathf.Clamp((int)y, AMIN, AMAX);
+        result.x = Mathf.Clamp(Mathf.RoundToInt(x), -arrayInfo.ARRAY_HALF_WIDTH, arrayInfo.ARRAY_HALF_WIDTH - 2) + arrayInfo.ARRAY_HALF_WIDTH;
+        result.y = Mathf.Clamp(Mathf.RoundToInt(y), -arrayInfo.ARRAY_HALF_WIDTH, arrayInfo.ARRAY_HALF_WIDTH - 2) + arrayInfo.ARRAY_HALF_WIDTH;
         return result;
     }
 
@@ -276,31 +247,37 @@ public class DiffusesNodeMap : MonoBehaviour
     public Vector3 ClampIn2DArray(Vector3 input)
     {
         Vector3 result = new Vector3();
-        result.x = Mathf.Clamp(input.x, AMIN+1, AMAX-1);
+        result.x = Mathf.Clamp(input.x, planePos.x + -arrayInfo.ARRAY_HALF_WIDTH + 2, planePos.x + arrayInfo.ARRAY_HALF_WIDTH - 2);
         result.y = input.y;
-        result.z = Mathf.Clamp(input.z, AMIN+1, AMAX-1);
+        result.z = Mathf.Clamp(input.z, planePos.x + -arrayInfo.ARRAY_HALF_WIDTH + 2, planePos.x + arrayInfo.ARRAY_HALF_WIDTH - 2);
         return result;
     }
 
     void ConvertMapTo2DArray(int[,] map, ref DiffuseNode[,] array)
     {
-        for(int x = 0; x < 32; x++)
+        for(int x = 0; x < map.GetLength(0); x++)
         {
-            for (int z = 0; z < 32; z++)
+            for (int z = 0; z < map.GetLength(0); z++)
             {
+                if (z == 31)
+                {
+                    int a = 0;
+                }
+                //if (z < arrayInfo.ARRAY_MIN || x < arrayInfo.ARRAY_MIN) continue;
+                //if (z > arrayInfo.ARRAY_MAX || x > arrayInfo.ARRAY_MAX) break;
                 DiffuseNode t = new DiffuseNode();
                 t.wall = map[z, x] == 0 ? false : true;
                 t.lambda = 1.0f;// map[z, x] == 0 ? 1.0f : 0.0f;
                 t.p = map[z, x] == 0 ? 0.0f : 1.0f;
-                t.position = new Vector3(planePos.x + x, planePos.y, planePos.z + z);
-                diffuseNodeArray[z, x] = t;
+                t.position = new Vector3(planePos.x - arrayInfo.ARRAY_HALF_WIDTH + x + gizmoCubeOffsetToCenter, planePos.y, planePos.z - arrayInfo.ARRAY_HALF_WIDTH + z + gizmoCubeOffsetToCenter);
+                diffuseNodeArray[z+1, x+1] = t;
             }
         }
     }
 
     public bool getNeighbours(out DiffuseNodeNeighbours result, int z, int x)
     {
-        if (x <= AMAX && x >= AMIN && z <= AMAX && z >= AMIN)
+        if (x <= arrayInfo.ARRAY_MAX && x >= arrayInfo.ARRAY_MIN && z <= arrayInfo.ARRAY_MAX && z >= arrayInfo.ARRAY_MIN)
         {
             result.left = diffuseNodeArray[z, x - 1];
             result.left.index = new Vector2Int(z, x - 1);
@@ -322,7 +299,7 @@ public class DiffusesNodeMap : MonoBehaviour
 
     public DiffuseNode getHighestNeighbour(int z, int x)
     {
-        if(z > AMAX || z < AMIN || x > AMAX || x < AMIN)
+        if(z > arrayInfo.ARRAY_MAX || z < arrayInfo.ARRAY_MIN || x > arrayInfo.ARRAY_MAX || x < arrayInfo.ARRAY_MIN)
         {
             Debug.LogError("Max index reached.");
         }
@@ -372,6 +349,8 @@ public class DiffusesNodeMap : MonoBehaviour
         return result; 
     }
 
+    public bool bake = false;
+
     void FixedUpdate()
     {
         tickTimer += Time.deltaTime;
@@ -404,9 +383,9 @@ public class DiffusesNodeMap : MonoBehaviour
             diffuseNodeArrayExternal.Add(n);
         }
 
-        for (int z = AMAX; z >= AMIN; z--)
+        for (int z = arrayInfo.ARRAY_MAX; z >= arrayInfo.ARRAY_MIN; z--)
         {
-            for (int x = AMAX; x >= AMIN; x--)
+            for (int x = arrayInfo.ARRAY_MAX; x >= arrayInfo.ARRAY_MIN; x--)
             {
                 DiffuseNode t = diffuseNodeArray[z, x];
                 DiffuseNodeNeighbours n;
@@ -421,14 +400,21 @@ public class DiffusesNodeMap : MonoBehaviour
 
                 float psum = n.left.p + n.right.p + n.up.p + n.down.p;
                 Color c = new Color(1 - (t.p / maxPValue * diffuseFactor), (t.p / maxPValue * diffuseFactor), 0, 1 - (t.p / maxPValue * diffuseFactor));
-                planeTexture.SetPixel(AMAX - x, AMAX - z, c);
+                planeTexture.SetPixel(arrayInfo.ARRAY_WIDTH - x, arrayInfo.ARRAY_WIDTH - z, c);
+
+                planeTexture.SetPixel(0, 0, Color.blue);
+                planeTexture.SetPixel(0, arrayInfo.ARRAY_WIDTH, Color.blue);
+                planeTexture.SetPixel(arrayInfo.ARRAY_WIDTH, arrayInfo.ARRAY_WIDTH, Color.blue);
+                planeTexture.SetPixel(arrayInfo.ARRAY_WIDTH, 0, Color.blue);
                 result.p += 0.25f * psum;
                 if (t.wall) result.p = 0.0f;
                 result.lambda = t.lambda;
                 diffuseNodeArray[z, x] = result;
+                //Debug.Log("node[" + z + "," + x + "].p = " + t.p);
                 //_topPValueNode = getHighestNeighbour(z, x);
             }
         }
+
         planeTexture.Apply();
         planeMeshMaterial.mainTexture = planeTexture;
         {
@@ -446,6 +432,33 @@ public class DiffusesNodeMap : MonoBehaviour
                 diffuseNodeArray[index.y, index.x].p = n.p;
             }
         }
+        foreach (Transform t in bakeObjects)
+        {
+            t.localPosition = GetNearestPointOnGrid(t.localPosition, 1.0f);
+            //t.localScale = GetNearestPointOnGrid(t.localScale * 1.25f);
+            Vector2Int index = new Vector2Int();
+            Vector2Int scale = new Vector2Int((int)t.transform.localScale.x, (int)t.transform.localScale.z);
+            Debug.Log(t.transform.localScale);
+            bool enable = false;
+            apply:
+            for (float y = -scale.y * 0.5f + 0.5f; y < scale.y * 0.5f + 0.5f; y++)
+            {
+                for (float x = -scale.x * 0.5f + 0.5f; x < scale.x * 0.5f + 0.5f; x++)
+                {
+                    if(bake)
+                    {
+                        bake = false;
+                        enable = true;
+                        goto apply;     
+                    }
+                    if(enable)
+                    {
+                        index = ClampIn2DArray(t.transform.position.x + x, t.transform.position.z + y);
+                        diffuseNodeArray[index.y+1, index.x+1].wall = true;
+                    }
+                }
+            }
+        }
 
         //MoveIn2DArray(ref playerPos);
         //diffuseNodeArray[playerPos.y, playerPos.x].p = _playerCent;
@@ -461,35 +474,53 @@ public class DiffusesNodeMap : MonoBehaviour
         //    diffuseNodeArray[playerPos2.y, playerPos2.x].p = _playerCent2;
         //}
     }
+    public Vector3 GetNearestPointOnGrid(Vector3 position, float size = 1.0f)
+    {
+        position -= transform.position;
+
+        int xCount = Mathf.RoundToInt(position.x / size);
+        int yCount = Mathf.RoundToInt(position.y / size);
+        int zCount = Mathf.RoundToInt(position.z / size);
+
+        Vector3 result = new Vector3(
+            (float)xCount * size,
+            position.y,
+            (float)zCount * size);
+
+        result += transform.position;
+
+        return result;
+    }
+
     float lastMaxPValue = 0;
     void OnDrawGizmos()
     {
         if (diffuseNodeArray != null)
         {
-            for (int x = 0; x < 32; x++)
+            for (int x = 0; x < arrayInfo.ACTUAL_ARRAY_WIDTH; x++)
             {
-                for (int z = 0; z < 32; z++)
+                for (int z = 0; z < arrayInfo.ACTUAL_ARRAY_WIDTH; z++)
                 {
                     if (diffuseNodeArray[z, x].wall)
                     {
                         Gizmos.color = Color.white;
                         Gizmos.DrawWireCube(diffuseNodeArray[z, x].position + Vector3.up * 0.5f, Vector3.one);
                     }
-                    else if(_debugDiffuseMap)
+                    else if (_debugDiffuseMap)
                     {
                         DiffuseNode node = diffuseNodeArray[z, x];
                         //Color c = new Color(1 - (node.p / maxPValue), (node.p / maxPValue), 0, 1.0f);
                         //if (node.p > 0.05f)
-                            //Debug.DrawLine(result.position, result.position + Vector3.up * result.p, c, 0.1f);
+                        //Debug.DrawLine(result.position, result.position + Vector3.up * result.p, c, 0.1f);
 
                         Color c = new Color(1 - (node.p / maxPValue * diffuseFactor), (node.p / maxPValue * diffuseFactor), 0, 1.0f);
                         Gizmos.color = c;
-                        
+
                         Gizmos.DrawCube(node.position + Vector3.up * 0.25f, new Vector3(1, 1, 1));
 
                         //  if(tickTimer > _tickRate)
                         // {
-                        
+
                         //    tickTimer = 0f;
                         //}
                     }
@@ -505,20 +536,32 @@ public class DiffusesNodeMap : MonoBehaviour
 
             //boundaries
             Gizmos.color = Color.yellow;
-            Gizmos.DrawCube(diffuseNodeArray[AMIN, AMIN].position + Vector3.up * 2.5f, new Vector3(1, 5, 1));
-            Gizmos.DrawCube(diffuseNodeArray[AMAX, AMAX].position + Vector3.up * 2.5f, new Vector3(1, 5, 1));
-            Gizmos.DrawCube(diffuseNodeArray[AMIN, AMAX].position + Vector3.up * 2.5f, new Vector3(1, 5, 1));
-            Gizmos.DrawCube(diffuseNodeArray[AMAX, AMIN].position + Vector3.up * 2.5f, new Vector3(1, 5, 1));
-            //Vector3 scale = new Vector3(0f, 1f * node.p * 2f, 1f);
-            //DiffuseNodeNeighbours n;
-            //getNeighbours(out n, z, x);
-            //Gizmos.color = Color.yellow;
-            //Gizmos.DrawCube(n.up.position + Vector3.up * 0.0125f, scale);
-            //Gizmos.DrawCube(n.down.position + Vector3.up * 0.0125f, scale);
-            //Gizmos.DrawCube(n.right.position + Vector3.up * 0.0125f, scale);
-            //Gizmos.DrawCube(n.left.position + Vector3.up * 0.0125f, scale);
+            Gizmos.DrawCube(diffuseNodeArray[arrayInfo.ARRAY_MIN, arrayInfo.ARRAY_MIN].position + Vector3.up * 2.5f, new Vector3(0.25f, 5, 0.25f));
+            Gizmos.DrawCube(diffuseNodeArray[arrayInfo.ARRAY_MAX, arrayInfo.ARRAY_MAX].position + Vector3.up * 2.5f, new Vector3(0.25f, 5, 0.25f));
+            Gizmos.DrawCube(diffuseNodeArray[arrayInfo.ARRAY_MIN, arrayInfo.ARRAY_MAX].position + Vector3.up * 2.5f, new Vector3(0.25f, 5, 0.25f));
+            Gizmos.DrawCube(diffuseNodeArray[arrayInfo.ARRAY_MAX, arrayInfo.ARRAY_MIN].position + Vector3.up * 2.5f, new Vector3(0.25f, 5, 0.25f));
+            Gizmos.color = Color.blue;
+            Gizmos.DrawCube(new Vector3(0, 0, 0) + Vector3.up * 2.5f, new Vector3(0.25f, 5, 0.25f));
+            Gizmos.DrawCube(new Vector3(arrayInfo.ARRAY_WIDTH + 1, 0, arrayInfo.ARRAY_WIDTH + 1) + Vector3.up * 2.5f, new Vector3(0.25f, 5, 0.25f));
+            Gizmos.DrawCube(new Vector3(0, 0, arrayInfo.ARRAY_WIDTH + 1) + Vector3.up * 2.5f, new Vector3(0.25f, 5, 0.25f));
+            Gizmos.DrawCube(new Vector3(arrayInfo.ARRAY_WIDTH + 1, 0, 0) + Vector3.up * 2.5f, new Vector3(0.25f, 5, 0.25f));
+
+            //for (int x = 0; x < arrayInfo.ACTUAL_ARRAY_WIDTH; x++)
+            //{
+            //    DiffuseNode nodeX = diffuseNodeArray[0, x];
+            //    DrawText(nodeX.position + Vector3.up * 2.0f, nodeX.index.ToString(), Color.white);
+            //    nodeX = diffuseNodeArray[arrayInfo.ACTUAL_ARRAY_WIDTH-1, x];
+            //    DrawText(nodeX.position + Vector3.up * 2.0f, nodeX.index.ToString(), Color.white);
+            //    for (int z = 0; z < arrayInfo.ACTUAL_ARRAY_WIDTH; z++)
+            //    {
+            //        DiffuseNode nodeZ = diffuseNodeArray[z, 0];
+            //        DrawText(nodeZ.position + Vector3.up * 2.0f, nodeZ.index.ToString(), Color.white);
+            //        nodeZ = diffuseNodeArray[z, arrayInfo.ACTUAL_ARRAY_WIDTH-1];
+            //        DrawText(nodeZ.position + Vector3.up * 2.0f, nodeZ.index.ToString(), Color.white);
+            //    }
+            //}
         }
-        foreach (var stringpair in Strings)
+                foreach (var stringpair in Strings)
         {
             GUIStyle style = new GUIStyle();
             style.fontSize = 32;

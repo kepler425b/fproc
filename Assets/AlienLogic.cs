@@ -152,7 +152,7 @@ public class AlienLogic : MonoBehaviour
 
     public void MoveForwardDiffuseMap(bool state)
     {
-        Debug.Log("_NPCAgent.hasPath: " + _NPCAgent.hasPath);
+        //Debug.Log("_NPCAgent.hasPath: " + _NPCAgent.hasPath);
         if (state)
         {
             //Vector3 p = _diffuseNodeMap.getHighestNodePosition(transform.position);

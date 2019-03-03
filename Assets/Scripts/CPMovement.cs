@@ -104,9 +104,12 @@ public class CPMovement : MonoBehaviour
     // Player commands, stores wish commands that the player asks for (Forward, back, jump, etc)
     private Cmd _cmd;
 
+    [System.Serializable]
     public struct ControllerInfo
     {
-        public Vector3 VelocityDelta;
+        public Vector3 velocityDelta;
+        public float velocity;
+        public float maxVelocity;
         public Vector3 rotationDelta;
         public float distanceTravelled;
         public float timeBetweenStepsNormalized;
@@ -116,7 +119,7 @@ public class CPMovement : MonoBehaviour
         public bool didStep;
     };
 
-    public ControllerInfo controllerInfo;
+    [SerializeField] public ControllerInfo controllerInfo;
     bool inverter = false;
 
     private void Start()
@@ -213,7 +216,9 @@ public class CPMovement : MonoBehaviour
         distanceTravelled += velocityDelta;
 
         
-        controllerInfo.VelocityDelta = velocityDelta;
+        controllerInfo.velocityDelta = velocityDelta;
+        controllerInfo.velocity = Vector3.Dot(playerVelocity, playerVelocity);
+        controllerInfo.maxVelocity = moveSpeed; 
         controllerInfo.rotationDelta = rotationDelta;
         float temp = Vector3.Dot(velocityDelta, velocityDelta);
         controllerInfo.distanceTravelled += temp;

@@ -137,7 +137,7 @@ public class PlayerLogic : MonoBehaviour
         while (normalizedTime < 1.0f)
         {
             jumpSoundPitch = normalizedTime;
-            _audioSource.pitch = 1.0f + movementController.controllerInfo.VelocityDelta.y;
+            _audioSource.pitch = 1.0f + movementController.controllerInfo.velocityDelta.y;
             normalizedTime += Time.deltaTime / duration;
             yield return null;
         }

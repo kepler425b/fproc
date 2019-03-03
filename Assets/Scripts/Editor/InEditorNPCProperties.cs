@@ -2,7 +2,7 @@
 using UnityEditor;
 
 [CustomEditor(typeof(AlienLogic))]
-public class InEditorNPCPropertiest : Editor
+public class InEditorNPCProperties : Editor
 {
     public override void OnInspectorGUI()
     {
@@ -13,7 +13,6 @@ public class InEditorNPCPropertiest : Editor
         {
             script.NPCManager.SetTarget(Selection.activeGameObject.transform.position);
         }
-
         //GUILayout.Label("Offset from others: " + script.behaviourState.offsetFromOther);
     }
 }

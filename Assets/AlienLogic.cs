@@ -28,12 +28,18 @@ public class AlienLogic : MonoBehaviour
     [SerializeField] float timeBetweenHits;
     [SerializeField] Transform _dummyObject;
     [SerializeField] DiffusesNodeMap _diffuseNodeMap;
+    [SerializeField] float _parabolaJumpHeight = 2.0f;
+    [SerializeField] float _parabolaJumpDuration = 2.0f;
 
     [Range(2, 20)]
     [SerializeField] public float _avoidanceRange;
 
     [SerializeField] SoundManager _soundManager;
     [SerializeField] GameObject _ragdoll;
+    [SerializeField] GameObject _ragdollFreezed;
+    [Range(0.0f, 10.0f)]
+    [SerializeField] float animationSpeed = 1.0f;
+    [SerializeField] float jumpDelay = 0.2f;
     [Range(0.0f, 1.0f)]
     [SerializeField] float _normalizedTime = 0.0f;
     Animator _animator;
@@ -58,8 +64,8 @@ public class AlienLogic : MonoBehaviour
     List<Vector3> parabolicPointList;
     float arcCalcAngle;
     float viewArcOffset = 90f;
-    Vector3 parabolicPoint;
     Vector3 direction;
+    public int skinnedMeshMaterialIndex = 0;
 
     Node behaviourTree;
     public Context behaviourState;
@@ -67,15 +73,15 @@ public class AlienLogic : MonoBehaviour
     //NPCManager init
     NPCManager.NPCNavInfo info = new NPCManager.NPCNavInfo();
 
-    private void Awake()
+    private Vector3 velocityDeltaStart;
+    private Vector3 velocityDeltaEnd;
+    [SerializeField] Vector3 velocityDelta;
+
+    private void OnEnable()
     {
         NPCManager = FindObjectOfType<NPCManager>();
         if (NPCManager == null) Debug.LogError("NPCManager is null");
-        _diffuseNodeMap = FindObjectOfType<DiffusesNodeMap>();
-    }
 
-    void Start()
-    {
         player = FindObjectOfType<CPMovement>().GetComponent<CPMovement>();
         if (player == null)
         {
@@ -85,24 +91,19 @@ public class AlienLogic : MonoBehaviour
         {
             playerLogic = player.GetComponent<PlayerLogic>();
         }
-        if (!_agentTarget) _agentTarget = FindObjectOfType<CPMovement>().transform;
-
-        NPCManager = FindObjectOfType<NPCManager>();
 
         _diffuseNodeMap = FindObjectOfType<DiffusesNodeMap>();
         skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
-
+        skinnedMeshRenderer.material = skinnedMeshRenderer.sharedMaterials[skinnedMeshMaterialIndex];
         _animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
-        viewArcNodes = new List<Vector3>();
-        parabolicPointList = new List<Vector3>();
         NPCBoxCollider = GetComponent<BoxCollider>();
+
+        viewArcNodes = new List<Vector3>();
         originalScale = transform.localScale;
-        //meshRenderer = GetComponentInChildren<MeshRenderer>();
-        //originalColor = meshRenderer.material.color;
 
         behaviourState = new Context();  // optionally add things you might need access to in your leaf nodes
-        behaviourState.enemy = _agentTarget.GetComponent<PlayerLogic>();
+        behaviourState.enemy = playerLogic;
         behaviourState.me = this;
         behaviourTree = CreateBehaviourTree();
         behaviourState._originalRadius = _NPCAgent.stoppingDistance;
@@ -110,6 +111,115 @@ public class AlienLogic : MonoBehaviour
         info.avoidanceRange = _avoidanceRange;
         info.scriptReference = this;
         NPCManager._NPCList.Add(info);
+    }
+
+    void Start()
+    {
+        
+    }
+    
+
+    void FixedUpdate()
+    {
+        if(_diffuseNodeMap) transform.position = _diffuseNodeMap.ClampIn2DArray(transform.position);
+        behaviourTree.Behave(behaviourState);
+    }
+
+    void Update()
+    {
+        velocityDeltaStart = transform.position;
+
+        if (_agentTarget)
+        {
+            direction = Vector3.Normalize(_agentTarget.transform.position - transform.position);
+            behaviourState.enemyDirection = direction;
+            distanceToEnemy = DistanceTo(_agentTarget.transform.position);
+            float dotOffseted = -Vector3.Dot(transform.forward, direction);
+            float distance = Vector3.Distance(_agentTarget.transform.position, transform.position);
+            _angleBetweenPlayer = (int)(Mathf.Acos(dotOffseted) * Mathf.Rad2Deg);
+        }
+
+        float speed = _NPCAgent.speed;
+        float animationSyncRatio = 0.6f / 1.0f;
+        float velocity = Vector3.Magnitude(_NPCAgent.velocity) / speed;
+        animationSpeed = speed * animationSyncRatio;
+        float normalizedSpeed = velocity * animationSpeed;
+        _animator.SetFloat("Normalized Speed", normalizedSpeed);
+        _animator.SetFloat("Velocity", velocity);
+        _animator.SetFloat("Up Velocity", velocityDelta.y);
+        hitTimer += Time.deltaTime;
+        damageTimer += Time.deltaTime;
+        jumpTimer += Time.deltaTime;
+        velocityDelta = velocityDeltaStart - velocityDeltaEnd;
+        velocityDeltaEnd = velocityDeltaStart;
+    }
+
+    static bool recovered = true;
+    private float damageTimer = 0.0f;
+    private float damageRate = 0.5f;
+
+    public void OnHit(float amount)
+    {
+        if (damageTimer >= damageRate)
+        {
+            StartCoroutine(IEStopAgent(0.5f));
+            nowHitTime = Time.time;
+            _animator.SetTrigger("Hit");
+            _animator.SetInteger("HitAnimationIndex", Random.Range(0, 2));
+            nowHPAmout = _health;
+            _healthDelta = Mathf.Abs((lastHPAmount - nowHPAmout) / timeBetweenHits);
+            lastHPAmount = nowHPAmout;
+            _soundManager.Hit();
+            timeBetweenHits = nowHitTime - lastHitTime;
+            lastHitTime = nowHitTime;
+
+            _health -= amount;
+            if (_health <= 0.0f)
+            {
+                GameObject o = Instantiate(_ragdoll);
+                o.transform.position = transform.position;
+                o.transform.rotation = transform.rotation;
+                o.transform.localScale = transform.localScale;
+                SkinnedMeshRenderer smr = o.transform.GetComponentInChildren<SkinnedMeshRenderer>();
+                if (smr)
+                {
+                    smr.material = skinnedMeshRenderer.materials[skinnedMeshMaterialIndex];
+                }
+                StopAllCoroutines();
+                Destroy(gameObject, 0.1f);
+                //_health = 100.0f;
+            }
+            else
+            {
+                Mesh mesh = new Mesh();
+                skinnedMeshRenderer.BakeMesh(mesh);
+                GameObject o = Instantiate(_ragdollFreezed);
+                o.transform.position = transform.position;
+                o.transform.rotation = transform.rotation;
+                o.transform.localScale = transform.localScale;
+                MeshRenderer mr = o.transform.GetComponentInChildren<MeshRenderer>();
+                MeshFilter mf = o.transform.GetComponentInChildren<MeshFilter>();
+                if (mr)
+                {
+                    mr.material = skinnedMeshRenderer.materials[skinnedMeshMaterialIndex];
+                    mf.mesh = mesh;
+                }
+                StopAllCoroutines();
+            }
+
+            damageTimer = 0.0f;
+
+        }
+    }
+
+    public void AEOnJumpStart()
+    {
+        StartCoroutine(Parabola(_NPCAgent, _parabolaJumpHeight, _parabolaJumpDuration, jumpPoint));
+    }
+
+    public void AEOnJumpEnd()
+    {
+        StartCoroutine(IEStopAgent(0.267f));
     }
 
     Node CreateBehaviourTree()
@@ -125,20 +235,48 @@ public class AlienLogic : MonoBehaviour
         Selector fightOrFlight = new Selector("fightOrFlight",
             attackEnemy, moveRandomly);
 
-        Repeater repeater = new Repeater(moveRandomly);
+        Repeater repeater = new Repeater(attackEnemy);
 
         return repeater;
+    }
+
+    struct ParabolaDebugInfo {
+        List<Vector3> p;
+    }
+
+    static bool finishedTranslation = true;
+    private float jumpTimeNormalized = 0;
+    IEnumerator Parabola(NavMeshAgent _NPCAgent, float height, float duration, Vector3 position)
+    {
+        finishedTranslation = false;
+        float maxDistance = 20.0f;
+
+        Vector3 startPos = transform.position;
+        Vector3 randomPoint = Random.insideUnitSphere * maxDistance;
+        randomPoint.y = 0;
+        NavMeshHit hit;
+        Vector3 endPos = (position);
+        if (NavMesh.SamplePosition(endPos, out hit, maxDistance, -1))
+        {
+            jumpTimeNormalized = 0.0f;
+            while (jumpTimeNormalized < 1.0f)
+            {
+                float yOffset = height * (jumpTimeNormalized - jumpTimeNormalized * jumpTimeNormalized);
+                _NPCAgent.transform.position = Vector3.Lerp(startPos, hit.position, jumpTimeNormalized) + yOffset * Vector3.up;
+                jumpTimeNormalized += Time.deltaTime / (duration - 1f);
+                _animator.SetFloat("JumpTimeNormalized", jumpTimeNormalized);
+                _NPCAgent.destination = endPos;
+                _NPCAgent.transform.LookAt(Vector3.Normalize(transform.position - endPos));
+                yield return null;
+            }
+            finishedTranslation = true;
+        }
     }
 
     public float DistanceTo(Vector3 target)
     {
         float result = Vector3.Distance(transform.position, target);
         return result;
-    }
-
-    public void LookAt(Vector3 target)
-    {
-
     }
 
     public void MoveForward(bool state)
@@ -149,6 +287,20 @@ public class AlienLogic : MonoBehaviour
             _NPCAgent.SetDestination(behaviourState.moveTarget);
         }
     }
+    float jumpTimer = 0;
+    float jumpRate = 5.0f;
+    private Vector3 jumpPoint;
+    public void Jump(Vector3 point)
+    {
+        if(finishedTranslation && jumpTimer >= jumpRate)
+        {
+            jumpPoint = point;
+            StartCoroutine(IEStopAgent(0.533f));
+            _animator.SetTrigger("Jump");
+            jumpTimer = 0f;
+            finishedTranslation = false;
+        }
+    }
 
     public void MoveForwardDiffuseMap(bool state)
     {
@@ -156,8 +308,72 @@ public class AlienLogic : MonoBehaviour
         if (state)
         {
             //Vector3 p = _diffuseNodeMap.getHighestNodePosition(transform.position);
-            Vector3 dir = _diffuseNodeMap.getHighestNodeDirection(transform.position);
-            _NPCAgent.SetDestination(transform.position + dir);
+            if(_diffuseNodeMap)
+            {
+                Vector3 dir = _diffuseNodeMap.getHighestNodeDirection(transform.position);
+                behaviourState.moveTarget = transform.position + dir * 0.5f;
+                _NPCAgent.SetDestination(behaviourState.moveTarget);
+            }
+        }
+    }
+
+
+    public void ShowDebugPoint()
+    {
+        StartCoroutine(IEShowDebugPoint(1, behaviourState.moveTarget));
+    }
+
+    bool showPoint = false;
+    IEnumerator IEShowDebugPoint(float duration, Vector3 pos)
+    {
+        showPoint = true;
+        yield return new WaitForSeconds(duration);
+        showPoint = false;
+    }
+
+    public IEnumerator IEStopAgent(float duration)
+    {
+        float t = 0.0f;
+        while (t <= duration)
+        {
+            _NPCAgent.velocity = Vector3.zero;
+            _NPCAgent.isStopped = true;
+            t += Time.deltaTime;
+            yield return null;
+        }
+        _NPCAgent.isStopped = false;
+    }
+
+    bool isAttacking;
+    IEnumerator IEAttack(float hitRate)
+    {
+        _animator.SetTrigger("Attack");
+        playerLogic.receiveDamage(10);
+        float t = 0.0f;
+        isAttacking = true;
+        while (t <= hitRate)
+        {
+            _NPCAgent.velocity = Vector3.zero;
+            _NPCAgent.isStopped = true;
+            t += Time.deltaTime;
+            yield return null;
+        }
+        _NPCAgent.isStopped = false;
+        isAttacking = false;
+    }
+
+    public void Attack()
+    {
+        if(!isAttacking) StartCoroutine(IEAttack(hitRate));
+    }
+
+    public void FindPointBehindPlayer()
+    {
+        float radius = 2.0f;
+        Vector3 result = Vector3.zero;
+        if (RandomPoint(_agentTarget.position + direction * radius, radius, out result))
+        {
+            _NPCAgent.SetDestination(result);
         }
     }
 
@@ -209,120 +425,6 @@ public class AlienLogic : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
-    {
-        transform.position = _diffuseNodeMap.ClampIn2DArray(transform.position);
-        behaviourTree.Behave(behaviourState);
-        foreach (NPCManager.NPCNavInfo p in NPCManager._NPCList)
-        {
-            Vector3 otherPos = p.scriptReference._NPCAgent.transform.position;
-            if (gameObject.GetInstanceID() == p.scriptReference.GetInstanceID()) continue;
-
-            float distance = Vector3.Distance(_NPCAgent.transform.position, otherPos);
-            Vector3 direction = Vector3.Normalize(p.position - _NPCAgent.transform.position);
-            //Debug.DrawLine(transform.position + Vector3.up * 2.0f, (transform.position + Vector3.up * 2.0f) + direction * distance, Color.red);
-
-            Vector3 optimalPosition = _NPCAgent.transform.position;
-            Vector3 optimalPosition2 = p.scriptReference._NPCAgent.transform.position;
-            //Debug.Log("distance: " + distance);
-            if (distance <= _avoidanceRange + p.avoidanceRange)
-            {
-                //optimalPosition = _NPCAgent.transform.position;
-                //Vector3 direction = -Vector3.Normalize(p.position - transform.position);
-                //Debug.DrawLine(transform.position + Vector3.up * 2.0f, (transform.position + Vector3.up * 2.0f) + direction, Color.red);
-                p.scriptReference.behaviourState.offsetFromOther = transform.position + Vector3.Normalize(_NPCAgent.transform.position - optimalPosition2);
-                //Debug.DrawLine(transform.position + Vector3.up * 4.0f, Vector3.up * 4.0f + behaviourState.offsetFromOther * distance, Color.magenta);
-            }
-            //else behaviourState.offsetFromOther = Vector3.zero;
-        }
-    }
-
-    void Update()
-    {
-        direction = Vector3.Normalize(_agentTarget.transform.position - transform.position);
-        behaviourState.enemyDirection = direction;
-        distanceToEnemy = DistanceTo(_agentTarget.transform.position);
-        float dotOffseted = -Vector3.Dot(transform.forward, direction);
-        float distance = Vector3.Distance(_agentTarget.transform.position, transform.position);
-        _angleBetweenPlayer = (int)(Mathf.Acos(dotOffseted) * Mathf.Rad2Deg);
-
-
-        //_NPCAgent.SetDestination(_agentTarget.position - direction * attackRadius * 0.90f);
-
-        //FindPointBehindPlayer();
-
-        float speed = _NPCAgent.speed;
-        float velocity = Vector3.Magnitude(_NPCAgent.velocity) / speed;
-        float upVelocity = _NPCAgent.velocity.z / speed;
-        float normalizedSpeed = 1 - velocity;
-        _animator.SetFloat("Normalized Speed", normalizedSpeed);
-        _animator.SetFloat("Velocity", velocity);
-        _animator.SetFloat("Up Velocity", upVelocity);
-        hitTimer += Time.deltaTime;
-        damageTimer += Time.deltaTime;
-    }
-
-    public void ShowDebugPoint()
-    {
-        StartCoroutine(IEShowDebugPoint(1, behaviourState.moveTarget));
-    }
-
-    bool showPoint = false;
-    IEnumerator IEShowDebugPoint(float duration, Vector3 pos)
-    {
-        showPoint = true;
-        yield return new WaitForSeconds(duration);
-        showPoint = false;
-    }
-
-    public IEnumerator IEStopAgent(float duration)
-    {
-        _NPCAgent.isStopped = true;
-        _NPCAgent.velocity = Vector3.zero;
-        float t = 0.0f;
-        while (t <= hitRate)
-        {
-            _NPCAgent.velocity = Vector3.zero;
-            _NPCAgent.isStopped = true;
-            t += Time.deltaTime;
-            yield return null;
-        }
-        _NPCAgent.isStopped = false;
-    }
-
-    bool isAttacking;
-    IEnumerator IEAttack(float hitRate)
-    {
-        _animator.SetTrigger("Attack");
-        playerLogic.receiveDamage(10);
-        float t = 0.0f;
-        isAttacking = true;
-        while (t <= hitRate)
-        {
-            _NPCAgent.velocity = Vector3.zero;
-            _NPCAgent.isStopped = true;
-            t += Time.deltaTime;
-            yield return null;
-        }
-        _NPCAgent.isStopped = false;
-        isAttacking = false;
-    }
-
-    public void Attack()
-    {
-        if(!isAttacking) StartCoroutine(IEAttack(hitRate));
-    }
-
-    public void FindPointBehindPlayer()
-    {
-        float radius = 2.0f;
-        Vector3 result = Vector3.zero;
-        if (RandomPoint(_agentTarget.position + direction * radius, radius, out result))
-        {
-            _NPCAgent.SetDestination(result);
-        }
-    }
-
     public void FindPointOffsight()
     {
         Ray ray = new Ray(transform.position, transform.forward);
@@ -364,14 +466,14 @@ public class AlienLogic : MonoBehaviour
     }
 
     Vector3 point;
-    float lastHitTime;
-    float nowHitTime;
-    float lastHPAmount;
-    float nowHPAmout;
+    private float lastHitTime;
+    private float nowHitTime;
+    private float lastHPAmount;
+    private float nowHPAmout;
 
     Vector3 coverPoint;
     Vector3 eyeSightOffsetY = new Vector3(0.0f, 0.25f, 0.0f);
-    float coverLookUpRange = 50.0f;
+    private float coverLookUpRange = 50.0f;
 
     bool LookForCover()
     {
@@ -409,43 +511,6 @@ public class AlienLogic : MonoBehaviour
         }
         return false;
     }
-
-    static bool recovered = true;
-    float damageTimer = 0.0f;
-    float damageRate = 0.5f;
-
-    public void OnHit(float amount)
-    {
-        if(damageTimer >= damageRate)
-        {
-            StartCoroutine(IEStopAgent(0.5f));
-            nowHitTime = Time.time;
-            _animator.SetTrigger("Hit");
-            _animator.SetInteger("HitAnimationIndex", Random.Range(0, 2));
-            nowHPAmout = _health;
-            _healthDelta = Mathf.Abs((lastHPAmount - nowHPAmout) / timeBetweenHits);
-            lastHPAmount = nowHPAmout;
-            _soundManager.Hit();
-            timeBetweenHits = nowHitTime - lastHitTime;
-            lastHitTime = nowHitTime;
-
-            _health -= amount;
-            if (_health <= 0.0f)
-            {
-                GameObject o = Instantiate(_ragdoll);
-                o.transform.position = transform.position;
-                o.transform.rotation = transform.rotation;
-                o.transform.localScale = transform.localScale;
-                SkinnedMeshRenderer smr = o.transform.GetComponentInChildren<SkinnedMeshRenderer>();
-                if (smr) smr.material = skinnedMeshRenderer.sharedMaterial;
-
-                StopAllCoroutines();
-                Destroy(gameObject, 0.1f);
-                //_health = 100.0f;
-            }
-            damageTimer = 0.0f;
-        }
-    }
 }
 
-    
+

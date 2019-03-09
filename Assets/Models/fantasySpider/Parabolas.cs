@@ -38,10 +38,10 @@ public class Parabolas : MonoBehaviour
             yield return null;
         }
     }
-    static bool finishedTranlation = true;
+    static bool finishedTranslation = true;
     IEnumerator Parabola(NavMeshAgent _NPCAgent, float height, float duration, Vector3 position)
     {
-        finishedTranlation = false;
+        finishedTranslation = false;
         float maxDistance = 20.0f;
         Vector3 startPos = transform.position;
 
@@ -63,12 +63,12 @@ public class Parabolas : MonoBehaviour
 
                 yield return null;
             }
-            finishedTranlation = true;
+            finishedTranslation = true;
         }
     }
     IEnumerator Curve(NavMeshAgent _NPCAgent, float duration, Vector3 position)
     {
-        finishedTranlation = false;
+        finishedTranslation = false;
         float maxDistance = 3.0f;
         Vector3 startPos = transform.position;
 
@@ -88,6 +88,6 @@ public class Parabolas : MonoBehaviour
                 yield return null;
             }
         }
-        finishedTranlation = true;
+        finishedTranslation = true;
     }
 }

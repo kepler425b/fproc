@@ -16,10 +16,12 @@ public class GunCannon : MonoBehaviour {
     [SerializeField] AudioSource _audioSource;
     [SerializeField] AudioClip INSoundDry;
     [SerializeField] AudioClip INSoundFire;
-    [SerializeField] AudioClip INSoundSpring;
+    [SerializeField] AudioClip INSoundRicochet;
     [SerializeField] AudioClip INSoundPiston;
+    [SerializeField] AudioClip INSoundCock;
     [SerializeField] Transform _camera;
-    [SerializeField] Transform _projectileOrigin;
+    [SerializeField] Transform projectileOrigin;
+    [SerializeField] GameObject projectile;
 
     CPMovement playerController;
     WorldState worldState;
@@ -30,7 +32,7 @@ public class GunCannon : MonoBehaviour {
     private float lastFire = 0.0f;
 
     public ParticleSystem gunFX;
-    public ParticleSystem emptyShellFX;
+    public ParticleSystem gunFXSmoke;
 
     [SerializeField] bool  enableShake = true;
     [SerializeField] float shakeStrength = .1f;
@@ -69,34 +71,44 @@ public class GunCannon : MonoBehaviour {
         _audioSource = GetComponentInParent<AudioSource>();
         if (!_audioSource) _audioSource = gameObject.AddComponent<AudioSource>();
         animator = transform.GetComponent<Animator>();
+        gunFX = GetComponentInChildren<ParticleSystem>();
     }
 
     void Update()
     {
-
         DebugAimingRays();
-        RaycastHit hit;
-
-        if (Input.GetKey(KeyCode.Mouse0))
+        bool good_to_shoot = Time.time >= lastFire + fireRate && !isSwitching;
+        //if (Input.GetKey(KeyCode.Mouse1) && good_to_shoot)
+        //{
+        //    charge += Time.deltaTime / chargeDuration;
+        //    animator.SetFloat("Charge", charge);
+        //    if (charge >= 1.0f)
+        //    {
+        //        attackAmount = charge;
+        //        charge = 0;
+        //        animator.SetTrigger("Fire");
+        //        animator.SetFloat("Charge", charge);
+        //        Shoot(fireRate);
+        //        StartCoroutine(IEFireRecoilShake());
+        //        lastFire = Time.time;
+        //    }
+        //}
+        //else if (charge >= 0.5f && !Input.GetKey(KeyCode.Mouse1) && good_to_shoot)
+        //{
+        //    attackAmount = charge;
+        //    charge = 0;
+        //    animator.SetFloat("Charge", charge);
+        //    animator.SetTrigger("NoChargeFire");
+        //    Shoot(fireRate);
+        //    StartCoroutine(IEFireRecoilShake());
+        //    lastFire = Time.time;
+        //}
+        if (Input.GetKeyDown(KeyCode.Mouse0) && good_to_shoot)
         {
-            charge += Time.deltaTime / chargeDuration;
-            animator.SetFloat("Charge", charge);
-            if (charge >= 1.0f)
-            {
-                attackAmount = charge;
-                charge = 0;
-                animator.SetFloat("Charge", charge);
-                Shoot(fireRate);
-                StartCoroutine(IEFireRecoilShake());
-            }
-        }
-        else if (charge >= 0.01f)
-        {
-            attackAmount = charge;
-            charge = 0;
-            animator.SetFloat("Charge", charge);
+            animator.SetTrigger("Fire");
             Shoot(fireRate);
             StartCoroutine(IEFireRecoilShake());
+            lastFire = Time.time;
         }
 
         if (enableShake)
@@ -156,26 +168,14 @@ public class GunCannon : MonoBehaviour {
         }
     }
 
-    public void SoundFire()
+    public void SoundCock()
     {
-        StartCoroutine(LOL());
         _audioSource.panStereo = 0f;
         _audioSource.volume = 1.0f;
         _audioSource.pitch = Random.Range(0.9f, 1f);
-        _audioSource.PlayOneShot(INSoundFire);
+        _audioSource.PlayOneShot(INSoundCock);
     }
-    public void SoundSpring()
-    {
-        _audioSource.pitch = Random.Range(0.8f, 1f);
-        _audioSource.PlayOneShot(INSoundSpring, Random.Range(0.1f, 0.4f));
-    }
-    public void SoundPiston()
-    {
-        _audioSource.panStereo = Random.Range(-0.5f, 0f);
-        _audioSource.pitch = Random.Range(0.9f, 1f);
-        _audioSource.PlayOneShot(INSoundPiston, Random.Range(0.1f, 0.3f));
-    }
-
+   
     void Shoot(float fireRate)
     {
         if (ammo <= 0)
@@ -183,19 +183,35 @@ public class GunCannon : MonoBehaviour {
             _audioSource.PlayOneShot(INSoundDry);
             return;
         }
-        animator.SetTrigger("Fire");
+
+        _audioSource.panStereo = 0f;
+        _audioSource.volume = 1.0f;
+        _audioSource.pitch = Random.Range(0.9f, 1f);
+        _audioSource.PlayOneShot(INSoundFire);
+
+        _audioSource.volume = Random.Range(0.5f, 0.8f); ;
+        _audioSource.pitch = Random.Range(0.9f, 1.1f);
+        _audioSource.PlayOneShot(INSoundRicochet);
+
+        if (gunFX) gunFX.Play();
+        if(gunFXSmoke) gunFXSmoke.Play();
+
+        GameObject b = Instantiate(projectile);
+        b.transform.position = projectileOrigin.transform.position;
+        b.GetComponent<Rigidbody>().AddForce(projectileOrigin.transform.transform.forward * firePower, ForceMode.Force);
+        Object.Destroy(b, 30.0f);
+
         fireRecoilFactor = 10.0f;
         RaycastHit hit;
         Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
-        if (Physics.Raycast(ray, out hit, fireDistance) && Time.time > lastFire + fireRate && !isSwitching)
+        if (Physics.Raycast(ray, out hit, fireDistance))
         {
             fireRate = animator.GetCurrentAnimatorClipInfo(0).Length;
             Vector3 recoil = new Vector3(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f));
-            Vector3 dir = (hit.point + recoil) - _projectileOrigin.position;
+            Vector3 dir = (hit.point + recoil) - projectileOrigin.position;
            
             ammo--;
             lastFire = Time.time;
-            if (emptyShellFX) emptyShellFX.Play();
             if (hit.collider.gameObject.tag == "Enemy")
             {
                 hit.collider.gameObject.GetComponent<AlienLogic>().OnHit(10f);
@@ -205,12 +221,11 @@ public class GunCannon : MonoBehaviour {
                 hit.collider.gameObject.GetComponent<Rigidbody>().AddForce(ray.direction * 5.0f, ForceMode.Impulse);
             }
         }
-        else if (Time.time > lastFire + fireRate && !isSwitching)
+        else 
         {
             fireRate = animator.GetCurrentAnimatorClipInfo(0).Length;
             ammo--;
             lastFire = Time.time;
-            if(emptyShellFX) emptyShellFX.Play();
         } 
     }
 
@@ -220,8 +235,11 @@ public class GunCannon : MonoBehaviour {
         Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
         if (Physics.Raycast(ray, out hit, fireDistance))
         {
-            Vector3 dir = hit.point - _projectileOrigin.position;
-            Debug.DrawRay(_projectileOrigin.position, dir * hit.distance, Color.green);
+            Debug.DrawLine(projectileOrigin.position, hit.point, Color.green);
+        }
+        else
+        {
+            Debug.DrawLine(_camera.transform.position, _camera.transform.position + _camera.transform.forward * 4.0f, Color.black);
         }
     }
 

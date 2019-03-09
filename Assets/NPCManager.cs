@@ -20,7 +20,7 @@ public class NPCManager : MonoBehaviour
     [SerializeField] bool _debugAvoidanceRange = false;
     [SerializeField] bool _enableDebug = true;
     [SerializeField] bool _debugTargetPoint = true;
-    [SerializeField] bool _setRandomTargetForAll = false;
+    [SerializeField] public bool _setRandomTargetForAll = false;
     [SerializeField] Transform _plane;
     [SerializeField] float _tickRate = 0.0f;
     private float _ticker = 0;

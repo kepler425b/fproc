@@ -12,12 +12,21 @@ public class AttackEnemy : Leaf
         if (context.enemy == null)
             return NodeStatus.FAILURE;
 
-        if (context.me.DistanceTo(context.moveTarget) >= context.enemy._radius)
+        float distance = context.me.DistanceTo(context.enemy.transform.position);
+
+        if (distance + context.enemy._radius <= 20f)
+        {
+            context.me.Jump(context.enemy.transform.position);
+            return NodeStatus.FAILURE;
+        }
+
+        if (distance >= context.enemy._radius)
         {
             context.me._NPCAgent.stoppingDistance = context._originalRadius;
             //context.me._NPCAgent.isStopped = false;
             return NodeStatus.FAILURE;
         }
+        
         context.me._NPCAgent.stoppingDistance = context.enemy._radius;
         Debug.Log("radius: " + context.enemy._radius);
         //context.me._NPCAgent.isStopped = true;

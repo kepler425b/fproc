@@ -8,7 +8,6 @@ using UnityEngine.UI;
 
 public class gunModule : MonoBehaviour {
 
-
 	public enum FireMode {
 		single,
 		automatic,
@@ -36,7 +35,7 @@ public class gunModule : MonoBehaviour {
     public Vector3 adj_pos;
     public Vector3 adj_rot;
     public GameObject iron_ref;
-    public GameObject camera_ref;
+    [SerializeField] Transform _camera;
     public Transform weaponLookTarget;
     public Vector3 adjust;
     public uint ammo;
@@ -109,8 +108,6 @@ public class gunModule : MonoBehaviour {
             StartCoroutine(SwitchingDelay(4.417f));
 
         }
-        Debug.DrawRay(_projectileOrigin.position, _projectileOrigin.forward * 10f, Color.blue);
-        
 
         if (EnableShake)
         {
@@ -167,12 +164,12 @@ public class gunModule : MonoBehaviour {
             _audioSource.PlayOneShot(gunDrySound);
             return;
         }
+        anim.SetTrigger("Fire");
         RaycastHit hit;
-        Ray ray = new Ray(camera_ref.transform.position, camera_ref.transform.forward);
+        Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
         if (Physics.Raycast(ray, out hit, fireDistance) && Time.time > lastFire + fireRate && !isSwitching)
         {
-            anim.SetTrigger("Fire");
-            fireRate = anim.GetCurrentAnimatorClipInfo(0).Length;
+            //fireRate = anim.GetCurrentAnimatorClipInfo(0).Length;
             Vector3 recoil = new Vector3(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f));
             Vector3 dir = (hit.point + recoil) - _projectileOrigin.position;
            
@@ -184,7 +181,7 @@ public class gunModule : MonoBehaviour {
             //_audioSource.PlayOneShot(gunShotSound);
             ammo--;
             lastFire = Time.time;
-            gunFX.Play();
+            //gunFX.Play();
             if (emptyShellFX) emptyShellFX.Play();
             if (hit.collider.gameObject.tag == "Enemy")
             {
@@ -197,12 +194,11 @@ public class gunModule : MonoBehaviour {
         }
         else if (Time.time > lastFire + fireRate && !isSwitching)
         {
-            anim.SetTrigger("Fire");
             fireRate = anim.GetCurrentAnimatorClipInfo(0).Length;
           
             ammo--;
             lastFire = Time.time;
-            gunFX.Play();
+            //gunFX.Play();
             if(emptyShellFX) emptyShellFX.Play();
         } 
     }
@@ -210,11 +206,14 @@ public class gunModule : MonoBehaviour {
     void DebugAimingRays()
     {
         RaycastHit hit;
-        Ray ray = new Ray(camera_ref.transform.position, camera_ref.transform.forward);
+        Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
         if (Physics.Raycast(ray, out hit, fireDistance))
         {
-            Vector3 dir = hit.point - _projectileOrigin.position;
-            Debug.DrawRay(_projectileOrigin.position, dir * hit.distance, Color.green);
+            Debug.DrawLine(_projectileOrigin.position, hit.point, Color.green);
+        }
+        else
+        {
+            Debug.DrawLine(_camera.transform.position, _camera.transform.position + _camera.transform.forward * 4.0f, Color.black);
         }
     }
 

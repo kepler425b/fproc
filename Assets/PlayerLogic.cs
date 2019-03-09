@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerLogic : MonoBehaviour
 {
     CPMovement movementController;
-    [SerializeField] public float _radius;
+    [SerializeField] public float _radius = 1.0f;
     [SerializeField] int _health = 100;
     [SerializeField] public float _healthDelta;
     [SerializeField] float _maxDamageDelta = 20.0f;
@@ -16,7 +16,7 @@ public class PlayerLogic : MonoBehaviour
     [SerializeField] Transform _camera;
     [SerializeField] CanvasRenderer _crScreenOverlay;
     [SerializeField] CanvasRenderer _crHUD;
-    [SerializeField] DiffusesNodeMap _diffuseNodeMap;
+    [SerializeField] DiffuseNavMeshMap _diffuseNavMeshMap;
     [SerializeField] Text textHP;
     [SerializeField] AudioSource _audioSource;
     [SerializeField] AudioClip _damage_scream0;
@@ -61,7 +61,7 @@ public class PlayerLogic : MonoBehaviour
             _crScreenOverlay.gameObject.SetActive(true);
         }
         movementController = GetComponent<CPMovement>();
-        _diffuseNodeMap = FindObjectOfType<DiffusesNodeMap>();
+        _diffuseNavMeshMap = FindObjectOfType<DiffuseNavMeshMap>();
     }
 
     void OnAwake()
@@ -85,7 +85,7 @@ public class PlayerLogic : MonoBehaviour
             }
         }
 
-        transform.position = _diffuseNodeMap.ClampIn2DArray(transform.position);
+        //if(_diffuseNavMeshMap) transform.position = _diffuseNavMeshMap.ClampInArray(transform.position);
 
         textHP.text = _health.ToString();
 
@@ -152,7 +152,7 @@ public class PlayerLogic : MonoBehaviour
         {
             hitEffectColor.a = Mathf.Lerp(0, hitColorAlphaFactor * 5.0f, normalizedTime);
             normalizedTime += Time.deltaTime / duration;
-            _crScreenOverlay.SetAlpha(hitEffectColor.a);
+            //_crScreenOverlay.SetAlpha(hitEffectColor.a);
             yield return null;
         }
     }

@@ -29,7 +29,10 @@ public class NPCSpawner : MonoBehaviour
             SkinnedMeshRenderer smr = o.GetComponentInChildren<SkinnedMeshRenderer>();
             if (smr)
             {
-                smr.material = smr.materials[Random.Range(0, 3)];
+                int index = Random.Range(0, 2);
+                Material mat = smr.materials[index];
+                smr.material = mat;
+                o.GetComponent<AlienLogic>().skinnedMeshMaterialIndex = index;
             }
 #if true
             o.transform.localScale *= Random.Range(0.25f, 5.5f);

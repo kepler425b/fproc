@@ -11,10 +11,10 @@ public class SoundManager : MonoBehaviour
     [SerializeField] AudioClip _squeak0;
     [SerializeField] AudioClip _squeak1;
 
-    void RandomizeClips(bool randomizeVol = false, params AudioClip[] clips)
+    void RandomizeClips(bool randomizeVol = false, float randomPitchScale = 0.05f, params AudioClip[] clips)
     {
         int index = Random.Range(0, clips.Length);
-        float pitch = Random.Range(0.95f, 1.05f);
+        float pitch = Random.Range(1.0f - randomPitchScale, 1.0f + randomPitchScale);
         if (randomizeVol)
         {
             float volScale = Random.Range(0.5f, 1.0f);
@@ -27,11 +27,11 @@ public class SoundManager : MonoBehaviour
 
     public void Step()
     {
-        RandomizeClips(false, _step0);
+        RandomizeClips(true, 0.05f, _step0);
     }
 
     public void Hit()
     {
-        RandomizeClips(_squeak0, _squeak1);
+        RandomizeClips(true, 0.5f, _squeak0, _squeak1);
     }
 }

@@ -16,6 +16,7 @@ public class NPCSpawner : MonoBehaviour
     {
         NPCManager.NPCNavInfo info = new NPCManager.NPCNavInfo();
         AlienLogic NPCRef;
+        PlayerLogic PlayerRef = FindObjectOfType<PlayerLogic>();
         Vector3 previousPos = Vector3.zero;
         for (int i = 0; i < _amount; i++)
         {
@@ -26,15 +27,20 @@ public class NPCSpawner : MonoBehaviour
             {
                 o.transform.parent = parent;
             }
+            o.transform.position = p;
+#if false
             SkinnedMeshRenderer smr = o.GetComponentInChildren<SkinnedMeshRenderer>();
             if (smr)
             {
                 int index = Random.Range(0, 2);
                 Material mat = smr.materials[index];
                 smr.material = mat;
-                o.GetComponent<AlienLogic>().skinnedMeshMaterialIndex = index;
+                AlienLogic script = o.GetComponent<AlienLogic>();
+                script.skinnedMeshMaterialIndex = index;
+                script._agentTarget = PlayerRef.transform;
             }
-#if true
+#endif
+#if false
             o.transform.localScale *= Random.Range(0.25f, 5.5f);
 #endif
             NPCRef = o.GetComponent<AlienLogic>();

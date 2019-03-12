@@ -197,7 +197,77 @@ ModelImporter:
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
-    extraExposedTransformPaths: []
+    extraExposedTransformPaths:
+    - Box01
+    - Box01/Box02
+    - Box01/Box02/Box03
+    - Box01/Box02/Box03/Box04
+    - Box01/Box02/Box03/Box04/Box07
+    - Box01/Box02/Box03/Box04/Box07/Dummy09
+    - Box01/Box02/Box03/Box04/Box08
+    - Box01/Box02/Box03/Box04/Box08/Dummy10
+    - Box01/Box05
+    - Box01/Box05/Box16
+    - Box01/Box05/Box16/Dummy08
+    - Box01/Box05/Dummy03
+    - Box01/Box06
+    - Box01/Box06/Box17
+    - Box01/Box06/Box17/Dummy07
+    - Box01/Box06/Dummy04
+    - Box01/Box12
+    - Box01/Box12/Dummy11
+    - Box01/Box13
+    - Box01/Box13/Dummy12
+    - Box01/Dummy02
+    - Box01/Dummy02/Box09
+    - Box01/Dummy02/Box09/Box10
+    - Box01/Dummy02/Box09/Box10/Box11
+    - Box01/Dummy02/Box09/Box10/Box11/Dummy01
+    - Box01/Dummy02/Box20
+    - Box01/Dummy02/Box20/Box18
+    - Box01/Dummy02/Box20/Box18/Box19
+    - Box01/Dummy02/Box20/Box18/Box19/Dummy13
+    - Box01/Dummy02/Box25
+    - Box01/Dummy02/Box25/Box22
+    - Box01/Dummy02/Box25/Box22/Box23
+    - Box01/Dummy02/Box25/Box22/Box23/Dummy14
+    - Box01/Dummy02/Box26
+    - Box01/Dummy02/Box26/Box21
+    - Box01/Dummy02/Box26/Box21/Box24
+    - Box01/Dummy02/Box26/Box21/Box24/Dummy15
+    - Box01/Dummy02/Box31
+    - Box01/Dummy02/Box31/Box28
+    - Box01/Dummy02/Box31/Box28/Box29
+    - Box01/Dummy02/Box31/Box28/Box29/Dummy16
+    - Box01/Dummy02/Box35
+    - Box01/Dummy02/Box35/Box32
+    - Box01/Dummy02/Box35/Box32/Box36
+    - Box01/Dummy02/Box35/Box32/Box36/Dummy18
+    - Box01/Dummy02/Box37
+    - Box01/Dummy02/Box37/Box33
+    - Box01/Dummy02/Box37/Box33/Box34
+    - Box01/Dummy02/Box37/Box33/Box34/Dummy19
+    - Box01/Dummy02/Box38
+    - Box01/Dummy02/Box38/Box27
+    - Box01/Dummy02/Box38/Box27/Box30
+    - Box01/Dummy02/Box38/Box27/Box30/Dummy17
+    - IK Chain01
+    - IK Chain01/IK Chain02
+    - IK Chain03
+    - IK Chain03/IK Chain14
+    - IK Chain04
+    - IK Chain04/IK Chain15
+    - IK Chain05
+    - IK Chain05/IK Chain16
+    - IK Chain06
+    - IK Chain06/IK Chain13
+    - IK Chain07
+    - IK Chain07/IK Chain12
+    - IK Chain08
+    - IK Chain08/IK Chain11
+    - IK Chain09
+    - IK Chain09/IK Chain10
+    - Spider01
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16

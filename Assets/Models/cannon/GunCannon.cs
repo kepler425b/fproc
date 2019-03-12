@@ -47,6 +47,10 @@ public class GunCannon : MonoBehaviour {
     [SerializeField] public float fireRecoilFactor = 1.0f;
     [SerializeField] public float _rotZLerpStep = 0.02f;
     [SerializeField] public float _rotYLerpStep = 0.05f;
+    [SerializeField] public float viewModelRayMaxDistance = 1.5f;
+    [SerializeField] public float viewModelStrechFactor = 1.0f;
+
+
 
 
     float charge = 0;
@@ -55,6 +59,7 @@ public class GunCannon : MonoBehaviour {
     float attackAmount = 0;
 
     Vector3 originPosition;
+    Vector3 originScale;
     Quaternion originRotation;
 
     float t;
@@ -65,6 +70,7 @@ public class GunCannon : MonoBehaviour {
     void Start()
     {
         originPosition = transform.localPosition;
+        originScale = transform.localScale;
         originRotation = transform.localRotation;
         playerController = FindObjectOfType<CPMovement>();
         worldState = GameObject.FindObjectOfType<WorldState>();
@@ -76,7 +82,6 @@ public class GunCannon : MonoBehaviour {
 
     void Update()
     {
-        DebugAimingRays();
         bool good_to_shoot = Time.time >= lastFire + fireRate && !isSwitching;
         //if (Input.GetKey(KeyCode.Mouse1) && good_to_shoot)
         //{
@@ -113,16 +118,45 @@ public class GunCannon : MonoBehaviour {
 
         if (enableShake)
         {
-            StartCoroutine(IEShake());
+            IEShake();
+            //IEStretchModel();
         }
     }
 
-    IEnumerator IEShake()
+    RaycastHit IERayHit = new RaycastHit();
+    void IEStretchModel()
+    {
+        transform.localScale = originScale;
+        Ray IERay = new Ray(transform.position - transform.forward * 0.5f, transform.forward);
+        if(Physics.Raycast(IERay, out IERayHit, viewModelRayMaxDistance))
+        {
+            Debug.DrawLine(IERay.origin, IERayHit.point, Color.yellow);
+            if (viewModelRayMaxDistance > 1f)
+            {
+                float t = 1f - (IERayHit.distance / 1f);
+                Debug.Log(t);
+                transform.localScale = new Vector3(originScale.x, originScale.y, originScale.z - t * viewModelStrechFactor);
+                float c = Mathf.Lerp(transform.position.z, transform.position.z - t, 0.5f);
+                transform.position = new Vector3(transform.position.x, transform.position.y, c);
+            }
+            else
+            {
+                transform.localScale = new Vector3(originScale.x, originScale.y, originScale.z * IERayHit.distance);
+                transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - (1f - IERayHit.distance));
+            }
+        }
+        else
+        {
+            Debug.DrawLine(IERay.origin, IERay.origin + IERay.direction * viewModelRayMaxDistance, Color.yellow);
+        }
+    }
+
+    void IEShake()
     {
         float playerRotDeltaY = playerController.controllerInfo.rotationDelta.y;
         rotAmountY = -playerRotDeltaY;
         rotAmountZ = playerRotDeltaY;
-        float lerpedPosX = Mathf.Lerp(originPosition.x, originPosition.x * playerRotDeltaY * shakeStrengthPosX, _posXLerpStep);
+        float lerpedPosX = Mathf.Lerp(originPosition.x, originPosition.x * playerRotDeltaY * shakeStrengthPosX * Mathf.PerlinNoise(Random.Range(0, 1), Random.Range(0, 1)), _posXLerpStep);
         transform.localPosition = new Vector3(lerpedPosX, originPosition.y, originPosition.z);
 
         float vn = playerController.controllerInfo.velocity == 0f ? 0f : (playerController.controllerInfo.velocity / playerController.controllerInfo.maxVelocity);
@@ -142,8 +176,6 @@ public class GunCannon : MonoBehaviour {
         (rotAmountZ + playerController.controllerInfo.timeBetweenStepsNormalized * 0.1f) * shakeStrengthZ,
         originRotation.w),
         _rotZLerpStep);
-
-        yield return null;
     }
 
     IEnumerator LOL()
@@ -189,44 +221,20 @@ public class GunCannon : MonoBehaviour {
         _audioSource.pitch = Random.Range(0.9f, 1f);
         _audioSource.PlayOneShot(INSoundFire);
 
-        _audioSource.volume = Random.Range(0.5f, 0.8f); ;
-        _audioSource.pitch = Random.Range(0.9f, 1.1f);
-        _audioSource.PlayOneShot(INSoundRicochet);
+        //_audioSource.volume = Random.Range(0.5f, 0.8f); ;
+        //_audioSource.pitch = Random.Range(0.9f, 1.1f);
+        //_audioSource.PlayOneShot(INSoundRicochet);
 
         if (gunFX) gunFX.Play();
         if(gunFXSmoke) gunFXSmoke.Play();
 
         GameObject b = Instantiate(projectile);
+        b.GetComponent<CannonBall>().direction = _camera.transform.forward;
         b.transform.position = projectileOrigin.transform.position;
         b.GetComponent<Rigidbody>().AddForce(projectileOrigin.transform.transform.forward * firePower, ForceMode.Force);
         Object.Destroy(b, 30.0f);
 
         fireRecoilFactor = 10.0f;
-        RaycastHit hit;
-        Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
-        if (Physics.Raycast(ray, out hit, fireDistance))
-        {
-            fireRate = animator.GetCurrentAnimatorClipInfo(0).Length;
-            Vector3 recoil = new Vector3(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f));
-            Vector3 dir = (hit.point + recoil) - projectileOrigin.position;
-           
-            ammo--;
-            lastFire = Time.time;
-            if (hit.collider.gameObject.tag == "Enemy")
-            {
-                hit.collider.gameObject.GetComponent<AlienLogic>().OnHit(10f);
-            }
-            if(hit.collider.gameObject.tag == "Physics Prop")
-            {
-                hit.collider.gameObject.GetComponent<Rigidbody>().AddForce(ray.direction * 5.0f, ForceMode.Impulse);
-            }
-        }
-        else 
-        {
-            fireRate = animator.GetCurrentAnimatorClipInfo(0).Length;
-            ammo--;
-            lastFire = Time.time;
-        } 
     }
 
     void DebugAimingRays()

@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 public class AlienLogic : MonoBehaviour
 {
-    [SerializeField] Transform _agentTarget;
+    [SerializeField] public Transform _agentTarget;
     [SerializeField] public NavMeshAgent _NPCAgent;
     [SerializeField] bool _ignoreObstacles;
     [SerializeField] bool _debugNPCRayCast = false;
@@ -36,7 +36,6 @@ public class AlienLogic : MonoBehaviour
 
     [SerializeField] SoundManager _soundManager;
     [SerializeField] GameObject _ragdoll;
-    [SerializeField] GameObject _ragdollFreezed;
     [Range(0.0f, 10.0f)]
     [SerializeField] float animationSpeed = 1.0f;
     [SerializeField] float jumpDelay = 0.2f;
@@ -157,58 +156,81 @@ public class AlienLogic : MonoBehaviour
     static bool recovered = true;
     private float damageTimer = 0.0f;
     private float damageRate = 0.5f;
-
-    public void OnHit(float amount)
+    private bool dead = false;
+    public void OnHit(float amount, Vector3 direction)
     {
         if (damageTimer >= damageRate)
         {
-            StartCoroutine(IEStopAgent(0.5f));
-            nowHitTime = Time.time;
-            _animator.SetTrigger("Hit");
-            _animator.SetInteger("HitAnimationIndex", Random.Range(0, 2));
-            nowHPAmout = _health;
-            _healthDelta = Mathf.Abs((lastHPAmount - nowHPAmout) / timeBetweenHits);
-            lastHPAmount = nowHPAmout;
-            _soundManager.Hit();
-            timeBetweenHits = nowHitTime - lastHitTime;
-            lastHitTime = nowHitTime;
-
             _health -= amount;
-            if (_health <= 0.0f)
+            //if (_health <= 0.0f && !dead)
+            //{
+            //    dead = true;
+            //    StopAllCoroutines();
+            //    Mesh mesh = new Mesh();
+            //    skinnedMeshRenderer.BakeMesh(mesh);
+            //    GameObject o = Instantiate(_ragdoll);
+
+            //    Transform root = transform.GetChild(0);
+
+            //    CopyTransformsRecurse(root, o.transform);
+            //    o.transform.localScale = transform.localScale;
+            //    o.transform.GetChild(0).GetComponent<Rigidbody>().AddForce(direction * amount, ForceMode.Impulse);
+            //    MeshRenderer mr = o.transform.GetComponentInChildren<MeshRenderer>();
+            //    MeshFilter mf = o.transform.GetComponentInChildren<MeshFilter>();
+            //    if (mr)
+            //    {
+            //        mr.material = skinnedMeshRenderer.materials[skinnedMeshMaterialIndex];
+            //        mf.mesh = mesh;
+            //    }
+            //    Destroy(gameObject, 0.01f);
+            //}
+            if (_health <= 0.0f && !dead)
             {
-                GameObject o = Instantiate(_ragdoll);
-                o.transform.position = transform.position;
-                o.transform.rotation = transform.rotation;
-                o.transform.localScale = transform.localScale;
-                SkinnedMeshRenderer smr = o.transform.GetComponentInChildren<SkinnedMeshRenderer>();
-                if (smr)
-                {
-                    smr.material = skinnedMeshRenderer.materials[skinnedMeshMaterialIndex];
-                }
+                dead = true;
                 StopAllCoroutines();
-                Destroy(gameObject, 0.1f);
-                //_health = 100.0f;
+                GameObject o = Instantiate(_ragdoll);
+
+                Transform root = transform.GetChild(0);
+
+                CopyTransformsRecurse(root, o.transform);
+
+                foreach (Transform child in o.transform)
+                {
+                    if(child.childCount > 0)
+                    {
+                        Rigidbody rb = child.GetChild(0).GetComponent<Rigidbody>();
+                        if(rb) rb.AddForce(Random.insideUnitSphere * amount * 0.5f, ForceMode.Impulse);
+                    }
+                }
+                o.transform.localScale = transform.localScale;
+                Destroy(gameObject, 0.01f);
             }
             else
             {
-                Mesh mesh = new Mesh();
-                skinnedMeshRenderer.BakeMesh(mesh);
-                GameObject o = Instantiate(_ragdollFreezed);
-                o.transform.position = transform.position;
-                o.transform.rotation = transform.rotation;
-                o.transform.localScale = transform.localScale;
-                MeshRenderer mr = o.transform.GetComponentInChildren<MeshRenderer>();
-                MeshFilter mf = o.transform.GetComponentInChildren<MeshFilter>();
-                if (mr)
-                {
-                    mr.material = skinnedMeshRenderer.materials[skinnedMeshMaterialIndex];
-                    mf.mesh = mesh;
-                }
-                StopAllCoroutines();
+                StartCoroutine(IEStopAgent(0.5f));
+                nowHitTime = Time.time;
+                _animator.SetTrigger("Hit");
+                _animator.SetInteger("HitAnimationIndex", Random.Range(0, 2));
+                nowHPAmout = _health;
+                _healthDelta = Mathf.Abs((lastHPAmount - nowHPAmout) / timeBetweenHits);
+                lastHPAmount = nowHPAmout;
+                _soundManager.Hit();
+                timeBetweenHits = nowHitTime - lastHitTime;
+                lastHitTime = nowHitTime;
             }
+        }
+    }
 
-            damageTimer = 0.0f;
+    static void CopyTransformsRecurse(Transform src, Transform dst)
+    {
+        dst.position = src.position;
+        dst.rotation = src.rotation;
 
+        foreach (Transform child in dst)
+        {
+            Transform curSrc = src.Find(child.name);
+            if (curSrc)
+                CopyTransformsRecurse(curSrc, child);
         }
     }
 

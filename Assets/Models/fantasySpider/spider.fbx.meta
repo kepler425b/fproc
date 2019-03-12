@@ -1,0 +1,371 @@
+fileFormatVersion: 2
+guid: d6dd65016131fc64faa2d1851f955702
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Armature.001
+    100002: Armature.002
+    100004: Armature.003
+    100006: Armature.004
+    100008: Armature.005
+    100010: Armature.006
+    100012: Armature.007
+    100014: Armature.008
+    100016: Armature.009
+    100018: Box01
+    100020: Box02
+    100022: Box03
+    100024: Box05
+    100026: Box06
+    100028: Box07
+    100030: Box08
+    100032: Box09
+    100034: Box10
+    100036: Box11
+    100038: Box12
+    100040: Box13
+    100042: Box16
+    100044: Box17
+    100046: Box18
+    100048: Box19
+    100050: Box20
+    100052: Box21
+    100054: Box22
+    100056: Box23
+    100058: Box24
+    100060: Box25
+    100062: Box26
+    100064: Box27
+    100066: Box28
+    100068: Box29
+    100070: Box30
+    100072: Box31
+    100074: Box32
+    100076: Box33
+    100078: Box34
+    100080: Box35
+    100082: Box36
+    100084: Box37
+    100086: Box38
+    100088: //RootNode
+    100090: Spider01
+    100092: Spider01.001
+    100094: Spider01.002
+    100096: Spider01.003
+    100098: Spider01.004
+    100100: Spider01.005
+    100102: Spider01.006
+    100104: Spider01.007
+    100106: Spider01.008
+    100108: Spider01.009
+    100110: Spider01.010
+    100112: Spider01.011
+    100114: Spider01.012
+    100116: Spider01.013
+    100118: Spider01.014
+    100120: Armature.Leg.L.0
+    100122: Armature.Leg.L.1
+    100124: Armature.Leg.L.2
+    100126: Armature.Leg.L.3
+    100128: Armature.Leg.R.0
+    100130: Armature.Leg.R.1
+    100132: Armature.Leg.R.2
+    100134: Armature.Leg.R.3
+    100136: Armature.Spider
+    100138: Jaw.L.0
+    100140: Jaw.R.0
+    100142: Leg.L.Bottom
+    100144: Leg.L.Bottom 1
+    100146: Leg.L.Bottom 2
+    100148: Leg.L.Bottom 3
+    100150: Leg.L.Middle
+    100152: Leg.L.Middle 1
+    100154: Leg.L.Middle 2
+    100156: Leg.L.Middle 3
+    100158: Leg.L.Top
+    100160: Leg.L.Top 1
+    100162: Leg.L.Top 2
+    100164: Leg.L.Top 3
+    100166: Leg.R.Bottom
+    100168: Leg.R.Bottom 1
+    100170: Leg.R.Bottom 2
+    100172: Leg.R.Bottom 3
+    100174: Leg.R.Middle
+    100176: Leg.R.Middle 1
+    100178: Leg.R.Middle 2
+    100180: Leg.R.Middle 3
+    100182: Leg.R.Top
+    100184: Leg.R.Top 1
+    100186: Leg.R.Top 2
+    100188: Leg.R.Top 3
+    100190: Mesh.Leg.L.0
+    100192: Mesh.Leg.L.1
+    100194: Mesh.Leg.L.2
+    100196: Mesh.Leg.L.3
+    100198: Mesh.Leg.R.0
+    100200: Mesh.Leg.R.1
+    100202: Mesh.Leg.R.2
+    100204: Mesh.Leg.R.3
+    100206: Mesh.Spider
+    100208: Root
+    100210: Spine.0
+    100212: Spine.1
+    100214: Tail.L
+    100216: Tail.R
+    400000: Armature.001
+    400002: Armature.002
+    400004: Armature.003
+    400006: Armature.004
+    400008: Armature.005
+    400010: Armature.006
+    400012: Armature.007
+    400014: Armature.008
+    400016: Armature.009
+    400018: Box01
+    400020: Box02
+    400022: Box03
+    400024: Box05
+    400026: Box06
+    400028: Box07
+    400030: Box08
+    400032: Box09
+    400034: Box10
+    400036: Box11
+    400038: Box12
+    400040: Box13
+    400042: Box16
+    400044: Box17
+    400046: Box18
+    400048: Box19
+    400050: Box20
+    400052: Box21
+    400054: Box22
+    400056: Box23
+    400058: Box24
+    400060: Box25
+    400062: Box26
+    400064: Box27
+    400066: Box28
+    400068: Box29
+    400070: Box30
+    400072: Box31
+    400074: Box32
+    400076: Box33
+    400078: Box34
+    400080: Box35
+    400082: Box36
+    400084: Box37
+    400086: Box38
+    400088: //RootNode
+    400090: Spider01
+    400092: Spider01.001
+    400094: Spider01.002
+    400096: Spider01.003
+    400098: Spider01.004
+    400100: Spider01.005
+    400102: Spider01.006
+    400104: Spider01.007
+    400106: Spider01.008
+    400108: Spider01.009
+    400110: Spider01.010
+    400112: Spider01.011
+    400114: Spider01.012
+    400116: Spider01.013
+    400118: Spider01.014
+    400120: Armature.Leg.L.0
+    400122: Armature.Leg.L.1
+    400124: Armature.Leg.L.2
+    400126: Armature.Leg.L.3
+    400128: Armature.Leg.R.0
+    400130: Armature.Leg.R.1
+    400132: Armature.Leg.R.2
+    400134: Armature.Leg.R.3
+    400136: Armature.Spider
+    400138: Jaw.L.0
+    400140: Jaw.R.0
+    400142: Leg.L.Bottom
+    400144: Leg.L.Bottom 1
+    400146: Leg.L.Bottom 2
+    400148: Leg.L.Bottom 3
+    400150: Leg.L.Middle
+    400152: Leg.L.Middle 1
+    400154: Leg.L.Middle 2
+    400156: Leg.L.Middle 3
+    400158: Leg.L.Top
+    400160: Leg.L.Top 1
+    400162: Leg.L.Top 2
+    400164: Leg.L.Top 3
+    400166: Leg.R.Bottom
+    400168: Leg.R.Bottom 1
+    400170: Leg.R.Bottom 2
+    400172: Leg.R.Bottom 3
+    400174: Leg.R.Middle
+    400176: Leg.R.Middle 1
+    400178: Leg.R.Middle 2
+    400180: Leg.R.Middle 3
+    400182: Leg.R.Top
+    400184: Leg.R.Top 1
+    400186: Leg.R.Top 2
+    400188: Leg.R.Top 3
+    400190: Mesh.Leg.L.0
+    400192: Mesh.Leg.L.1
+    400194: Mesh.Leg.L.2
+    400196: Mesh.Leg.L.3
+    400198: Mesh.Leg.R.0
+    400200: Mesh.Leg.R.1
+    400202: Mesh.Leg.R.2
+    400204: Mesh.Leg.R.3
+    400206: Mesh.Spider
+    400208: Root
+    400210: Spine.0
+    400212: Spine.1
+    400214: Tail.L
+    400216: Tail.R
+    2100000: 03 - Default
+    2300000: Spider01.005
+    2300002: Spider01.006
+    2300004: Spider01.007
+    2300006: Spider01.009
+    2300008: Spider01.010
+    2300010: Spider01.011
+    3300000: Spider01.005
+    3300002: Spider01.006
+    3300004: Spider01.007
+    3300006: Spider01.009
+    3300008: Spider01.010
+    3300010: Spider01.011
+    4300000: Spider01
+    4300002: Spider01.001
+    4300004: Spider01.002
+    4300006: Spider01.003
+    4300008: Spider01.004
+    4300010: Spider01.005
+    4300012: Spider01.006
+    4300014: Spider01.007
+    4300016: Spider01.008
+    4300018: Spider01.009
+    4300020: Spider01.010
+    4300022: Spider01.011
+    4300024: Spider01.012
+    4300026: Spider01.013
+    4300028: Spider01.014
+    4300030: Mesh.Spider
+    4300032: Mesh.Leg.R.0
+    4300034: Mesh.Leg.R.1
+    4300036: Mesh.Leg.R.2
+    4300038: Mesh.Leg.L.3
+    4300040: Mesh.Leg.L.2
+    4300042: Mesh.Leg.L.1
+    4300044: Mesh.Leg.L.0
+    4300046: Mesh.Leg.R.3
+    9500000: //RootNode
+    13700000: Spider01
+    13700002: Spider01.001
+    13700004: Spider01.002
+    13700006: Spider01.003
+    13700008: Spider01.004
+    13700010: Spider01.008
+    13700012: Spider01.012
+    13700014: Spider01.013
+    13700016: Spider01.014
+    13700018: Mesh.Leg.L.0
+    13700020: Mesh.Leg.L.1
+    13700022: Mesh.Leg.L.2
+    13700024: Mesh.Leg.L.3
+    13700026: Mesh.Leg.R.0
+    13700028: Mesh.Leg.R.1
+    13700030: Mesh.Leg.R.2
+    13700032: Mesh.Leg.R.3
+    13700034: Mesh.Spider
+    2186277476908879412: ImportLogs
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 03 - Default
+    second: {fileID: 2100000, guid: 1035394dba39c5b41a002d49c4b0cb88, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

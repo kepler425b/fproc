@@ -185,7 +185,7 @@ public class gunModule : MonoBehaviour {
             if (emptyShellFX) emptyShellFX.Play();
             if (hit.collider.gameObject.tag == "Enemy")
             {
-                hit.collider.gameObject.GetComponent<AlienLogic>().OnHit(10f);
+                hit.collider.gameObject.GetComponent<AlienLogic>().OnHit(10f, Vector3.Normalize(hit.point - transform.position));
             }
             if(hit.collider.gameObject.tag == "Physics Prop")
             {

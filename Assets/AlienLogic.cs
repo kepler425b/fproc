@@ -27,7 +27,7 @@ public class AlienLogic : MonoBehaviour
     [SerializeField] float _maxHitDelta = 0.1f;
     [SerializeField] float timeBetweenHits;
     [SerializeField] Transform _dummyObject;
-    [SerializeField] DiffusesNodeMap _diffuseNodeMap;
+    [SerializeField] DiffusesNodeMap _diffuseNavMap;
     [SerializeField] float _parabolaJumpHeight = 2.0f;
     [SerializeField] float _parabolaJumpDuration = 2.0f;
 
@@ -91,7 +91,7 @@ public class AlienLogic : MonoBehaviour
             playerLogic = player.GetComponent<PlayerLogic>();
         }
 
-        _diffuseNodeMap = FindObjectOfType<DiffusesNodeMap>();
+        _diffuseNavMap = FindObjectOfType<DiffusesNodeMap>();
         skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
         skinnedMeshRenderer.material = skinnedMeshRenderer.sharedMaterials[skinnedMeshMaterialIndex];
         _animator = GetComponent<Animator>();
@@ -110,6 +110,7 @@ public class AlienLogic : MonoBehaviour
         info.avoidanceRange = _avoidanceRange;
         info.scriptReference = this;
         NPCManager._NPCList.Add(info);
+        _diffuseNavMap.RegisterObject(transform);
     }
 
     void Start()
@@ -120,7 +121,6 @@ public class AlienLogic : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(_diffuseNodeMap) transform.position = _diffuseNodeMap.ClampIn2DArray(transform.position);
         behaviourTree.Behave(behaviourState);
     }
 
@@ -151,6 +151,7 @@ public class AlienLogic : MonoBehaviour
         jumpTimer += Time.deltaTime;
         velocityDelta = velocityDeltaStart - velocityDeltaEnd;
         velocityDeltaEnd = velocityDeltaStart;
+        Debug.Log("_NPCAgent.isOnOffMeshLink:" + _NPCAgent.isOnOffMeshLink);
     }
 
     static bool recovered = true;
@@ -193,9 +194,12 @@ public class AlienLogic : MonoBehaviour
                 Transform root = transform.GetChild(0);
 
                 CopyTransformsRecurse(root, o.transform);
-
+                ParticleSystem ps;
                 foreach (Transform child in o.transform)
                 {
+
+                    ps = child.GetComponent<ParticleSystem>();
+                    if (ps) ps.Play();
                     if(child.childCount > 0)
                     {
                         Rigidbody rb = child.GetChild(0).GetComponent<Rigidbody>();
@@ -242,6 +246,7 @@ public class AlienLogic : MonoBehaviour
     public void AEOnJumpEnd()
     {
         StartCoroutine(IEStopAgent(0.267f));
+        _NPCAgent.CompleteOffMeshLink();
     }
 
     Node CreateBehaviourTree()
@@ -278,6 +283,7 @@ public class AlienLogic : MonoBehaviour
         randomPoint.y = 0;
         NavMeshHit hit;
         Vector3 endPos = (position);
+        //duration -= 1f;
         if (NavMesh.SamplePosition(endPos, out hit, maxDistance, -1))
         {
             jumpTimeNormalized = 0.0f;
@@ -285,10 +291,10 @@ public class AlienLogic : MonoBehaviour
             {
                 float yOffset = height * (jumpTimeNormalized - jumpTimeNormalized * jumpTimeNormalized);
                 _NPCAgent.transform.position = Vector3.Lerp(startPos, hit.position, jumpTimeNormalized) + yOffset * Vector3.up;
-                jumpTimeNormalized += Time.deltaTime / (duration - 1f);
+                jumpTimeNormalized += Time.deltaTime / duration;
                 _animator.SetFloat("JumpTimeNormalized", jumpTimeNormalized);
                 _NPCAgent.destination = endPos;
-                _NPCAgent.transform.LookAt(Vector3.Normalize(transform.position - endPos));
+                _NPCAgent.transform.forward = Vector3.Normalize(endPos - startPos);
                 yield return null;
             }
             finishedTranslation = true;
@@ -310,47 +316,50 @@ public class AlienLogic : MonoBehaviour
         }
     }
     float jumpTimer = 0;
-    float jumpRate = 5.0f;
+    float jumpRate = 2.5f;
     private Vector3 jumpPoint;
-    public void Jump(Vector3 point)
+    public bool Jump(Vector3 point)
     {
-        if(finishedTranslation && jumpTimer >= jumpRate)
+        if (finishedTranslation && jumpTimer >= jumpRate)
         {
             jumpPoint = point;
             StartCoroutine(IEStopAgent(0.533f));
             _animator.SetTrigger("Jump");
             jumpTimer = 0f;
-            finishedTranslation = false;
+            return true;
         }
+        else return false;
     }
-
     public void MoveForwardDiffuseMap(bool state)
     {
-        //Debug.Log("_NPCAgent.hasPath: " + _NPCAgent.hasPath);
         if (state)
         {
-            //Vector3 p = _diffuseNodeMap.getHighestNodePosition(transform.position);
-            if(_diffuseNodeMap)
+            if (_diffuseNavMap)
             {
-                Vector3 dir = _diffuseNodeMap.getHighestNodeDirection(transform.position);
-                behaviourState.moveTarget = transform.position + dir * 0.5f;
-                _NPCAgent.SetDestination(behaviourState.moveTarget);
+                Vector2Int index = _diffuseNavMap.ConvertPositionToIndex(transform.position);
+                float d = Vector3.Distance(transform.position, behaviourState.enemy.transform.position);
+                //Vector3 dir = _diffuseNavMap.getHighestNodeDirection(index);
+                if (finishedTranslation)
+                {
+                    if (d < 20f)
+                    {
+                        if (_NPCAgent.isOnOffMeshLink && Jump(_NPCAgent.currentOffMeshLinkData.endPos))
+                        {
+                        }
+                        else
+                        {
+                            behaviourState.moveTarget = playerLogic.transform.position;
+                            _NPCAgent.SetDestination(behaviourState.moveTarget);
+                        }
+                    }
+                    else
+                    {
+                        behaviourState.moveTarget = _diffuseNavMap.getHighestNodePosition(index.x, index.y);
+                        _NPCAgent.SetDestination(behaviourState.moveTarget);
+                    }
+                }
             }
         }
-    }
-
-
-    public void ShowDebugPoint()
-    {
-        StartCoroutine(IEShowDebugPoint(1, behaviourState.moveTarget));
-    }
-
-    bool showPoint = false;
-    IEnumerator IEShowDebugPoint(float duration, Vector3 pos)
-    {
-        showPoint = true;
-        yield return new WaitForSeconds(duration);
-        showPoint = false;
     }
 
     public IEnumerator IEStopAgent(float duration)

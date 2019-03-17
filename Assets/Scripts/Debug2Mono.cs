@@ -19,7 +19,7 @@ public class Debug2Mono : MonoBehaviour
         foreach (var stringpair in Strings)
         {
             GUIStyle style = new GUIStyle();
-            style.fontSize = 32;
+            style.fontSize = 12;
             Color color = stringpair.color.HasValue ? stringpair.color.Value : Color.green;
             style.normal.textColor = color;
 #if UNITY_EDITOR

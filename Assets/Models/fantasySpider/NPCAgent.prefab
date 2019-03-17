@@ -94,13 +94,12 @@ MonoBehaviour:
   _maxHitDelta: 0.5
   timeBetweenHits: 0
   _dummyObject: {fileID: 0}
-  _diffuseNodeMap: {fileID: 0}
-  _parabolaJumpHeight: 2
-  _parabolaJumpDuration: 2
+  _diffuseNavMap: {fileID: 0}
+  _parabolaJumpHeight: 2.5
+  _parabolaJumpDuration: 0.75
   _avoidanceRange: 0
   _soundManager: {fileID: 17143914751813944}
-  _ragdoll: {fileID: 2655972783624002932, guid: 49bb2333b35b5504cad82781cb542837,
-    type: 3}
+  _ragdoll: {fileID: 1423439600, guid: 6d09e93dc4528fe4996a502cfc6a286a, type: 3}
   animationSpeed: 1
   jumpDelay: 0.2
   _normalizedTime: 0

@@ -7,7 +7,7 @@ public class SetTargetEnemy : Leaf {
     public override NodeStatus OnBehave(BehaviourState state)
     {
         Context context = (Context)state;
-        context.moveTarget = context.enemy.transform.position;
+        //context.moveTarget = context.enemy.transform.position;
         return NodeStatus.SUCCESS;
     }
 

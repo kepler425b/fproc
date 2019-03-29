@@ -50,9 +50,6 @@ public class GunCannon : MonoBehaviour {
     [SerializeField] public float viewModelRayMaxDistance = 1.5f;
     [SerializeField] public float viewModelStrechFactor = 1.0f;
 
-
-
-
     float charge = 0;
     float chargeTimer = 0;
     float chargeDuration = 2.0f;
@@ -108,7 +105,7 @@ public class GunCannon : MonoBehaviour {
         //    StartCoroutine(IEFireRecoilShake());
         //    lastFire = Time.time;
         //}
-        if (Input.GetKeyDown(KeyCode.Mouse0) && good_to_shoot)
+        if (Input.GetKeyDown(KeyCode.Mouse0) && good_to_shoot && !isSwitching)
         {
             animator.SetTrigger("Fire");
             Shoot(fireRate);
@@ -204,7 +201,7 @@ public class GunCannon : MonoBehaviour {
     {
         _audioSource.panStereo = 0f;
         _audioSource.volume = 1.0f;
-        _audioSource.pitch = Random.Range(0.9f, 1f);
+        _audioSource.pitch = Random.Range(0.95f, 1.05f);
         _audioSource.PlayOneShot(INSoundCock);
     }
    

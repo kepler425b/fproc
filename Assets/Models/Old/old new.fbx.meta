@@ -1,0 +1,572 @@
+fileFormatVersion: 2
+guid: 7e2cd844120826c4dacf669c0f7ccf82
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: barrel
+    100002: basicRig.Body
+    100004: drum
+    100006: frame
+    100008: gear a
+    100010: gear b
+    100012: gear c
+    100014: hammer
+    100016: //RootNode
+    100018: barrel 1
+    100020: base
+    100022: basicRig
+    100024: clavicle.L
+    100026: clavicle.R
+    100028: deltoid.L
+    100030: deltoid.R
+    100032: drum 1
+    100034: f_index.01.L
+    100036: f_index.01.R
+    100038: f_index.02.L
+    100040: f_index.02.R
+    100042: f_index.03.L
+    100044: f_index.03.R
+    100046: f_middle.01.L
+    100048: f_middle.01.R
+    100050: f_middle.02.L
+    100052: f_middle.02.R
+    100054: f_middle.03.L
+    100056: f_middle.03.R
+    100058: f_pinky.01.L
+    100060: f_pinky.01.R
+    100062: f_pinky.02.L
+    100064: f_pinky.02.R
+    100066: f_pinky.03.L
+    100068: f_pinky.03.R
+    100070: f_ring.01.L
+    100072: f_ring.01.R
+    100074: f_ring.02.L
+    100076: f_ring.02.R
+    100078: f_ring.03.L
+    100080: f_ring.03.R
+    100082: forearm.L
+    100084: forearm.L.001
+    100086: forearm.R
+    100088: forearm.R.001
+    100090: gear a 1
+    100092: gear b 1
+    100094: gear c 1
+    100096: gun_armature
+    100098: hammer 1
+    100100: hand.L
+    100102: hand.R
+    100104: palm_index.L
+    100106: palm_index.R
+    100108: palm_middle.L
+    100110: palm_middle.R
+    100112: palm_pinky.L
+    100114: palm_pinky.R
+    100116: palm_ring.L
+    100118: palm_ring.R
+    100120: thumb.01.L
+    100122: thumb.01.R
+    100124: thumb.02.L
+    100126: thumb.02.R
+    100128: thumb.03.L
+    100130: thumb.03.R
+    100132: upper_arm.L
+    100134: upper_arm.R
+    100136: barrel.002
+    100138: barrel.007
+    100140: barrel.012
+    100142: barrel_end
+    100144: base 1
+    100146: base.004
+    100148: Circle.000
+    100150: Circle.001
+    100152: Circle.002
+    100154: Circle.003
+    100156: Cylinder
+    100158: drum.001
+    100160: drum.004
+    100162: drum_end
+    100164: f_index.03.L_end
+    100166: f_index.03.R_end
+    100168: f_middle.03.L_end
+    100170: f_middle.03.R_end
+    100172: f_pinky.03.L_end
+    100174: f_pinky.03.R_end
+    100176: f_ring.03.L_end
+    100178: f_ring.03.R_end
+    100180: forearm.L_end
+    100182: forearm.R_end
+    100184: FOV.Camera Center
+    100186: gear a_end
+    100188: gear b_end
+    100190: gear c_end
+    100192: gun.001
+    100194: hammer_end
+    100196: thumb.03.L_end
+    100198: thumb.03.R_end
+    400000: barrel
+    400002: basicRig.Body
+    400004: drum
+    400006: frame
+    400008: gear a
+    400010: gear b
+    400012: gear c
+    400014: hammer
+    400016: //RootNode
+    400018: barrel 1
+    400020: base
+    400022: basicRig
+    400024: clavicle.L
+    400026: clavicle.R
+    400028: deltoid.L
+    400030: deltoid.R
+    400032: drum 1
+    400034: f_index.01.L
+    400036: f_index.01.R
+    400038: f_index.02.L
+    400040: f_index.02.R
+    400042: f_index.03.L
+    400044: f_index.03.R
+    400046: f_middle.01.L
+    400048: f_middle.01.R
+    400050: f_middle.02.L
+    400052: f_middle.02.R
+    400054: f_middle.03.L
+    400056: f_middle.03.R
+    400058: f_pinky.01.L
+    400060: f_pinky.01.R
+    400062: f_pinky.02.L
+    400064: f_pinky.02.R
+    400066: f_pinky.03.L
+    400068: f_pinky.03.R
+    400070: f_ring.01.L
+    400072: f_ring.01.R
+    400074: f_ring.02.L
+    400076: f_ring.02.R
+    400078: f_ring.03.L
+    400080: f_ring.03.R
+    400082: forearm.L
+    400084: forearm.L.001
+    400086: forearm.R
+    400088: forearm.R.001
+    400090: gear a 1
+    400092: gear b 1
+    400094: gear c 1
+    400096: gun_armature
+    400098: hammer 1
+    400100: hand.L
+    400102: hand.R
+    400104: palm_index.L
+    400106: palm_index.R
+    400108: palm_middle.L
+    400110: palm_middle.R
+    400112: palm_pinky.L
+    400114: palm_pinky.R
+    400116: palm_ring.L
+    400118: palm_ring.R
+    400120: thumb.01.L
+    400122: thumb.01.R
+    400124: thumb.02.L
+    400126: thumb.02.R
+    400128: thumb.03.L
+    400130: thumb.03.R
+    400132: upper_arm.L
+    400134: upper_arm.R
+    400136: barrel.002
+    400138: barrel.007
+    400140: barrel.012
+    400142: barrel_end
+    400144: base 1
+    400146: base.004
+    400148: Circle.000
+    400150: Circle.001
+    400152: Circle.002
+    400154: Circle.003
+    400156: Cylinder
+    400158: drum.001
+    400160: drum.004
+    400162: drum_end
+    400164: f_index.03.L_end
+    400166: f_index.03.R_end
+    400168: f_middle.03.L_end
+    400170: f_middle.03.R_end
+    400172: f_pinky.03.L_end
+    400174: f_pinky.03.R_end
+    400176: f_ring.03.L_end
+    400178: f_ring.03.R_end
+    400180: forearm.L_end
+    400182: forearm.R_end
+    400184: FOV.Camera Center
+    400186: gear a_end
+    400188: gear b_end
+    400190: gear c_end
+    400192: gun.001
+    400194: hammer_end
+    400196: thumb.03.L_end
+    400198: thumb.03.R_end
+    2100000: base
+    2100002: basicRig_Skin.007
+    2100004: basicRig_Skin.006
+    2100006: shadeless
+    2100008: base.003
+    2100010: handle.003
+    2100012: hubs.003
+    2100014: No Name
+    2300000: barrel
+    2300002: basicRig.Body
+    2300004: drum
+    2300006: frame
+    2300008: gear a
+    2300010: gear b
+    2300012: gear c
+    2300014: hammer
+    2300016: barrel.002
+    2300018: barrel.007
+    2300020: barrel.012
+    2300022: base
+    2300024: base.004
+    2300026: Circle.000
+    2300028: Circle.001
+    2300030: Circle.002
+    2300032: Circle.003
+    2300034: Cylinder
+    2300036: drum.001
+    2300038: drum.004
+    2300040: FOV.Camera Center
+    2300042: gun.001
+    3300000: barrel
+    3300002: basicRig.Body
+    3300004: drum
+    3300006: frame
+    3300008: gear a
+    3300010: gear b
+    3300012: gear c
+    3300014: hammer
+    3300016: barrel.002
+    3300018: barrel.007
+    3300020: barrel.012
+    3300022: base
+    3300024: base.004
+    3300026: Circle.000
+    3300028: Circle.001
+    3300030: Circle.002
+    3300032: Circle.003
+    3300034: Cylinder
+    3300036: drum.001
+    3300038: drum.004
+    3300040: FOV.Camera Center
+    3300042: gun.001
+    4300000: frame
+    4300002: barrel
+    4300004: gear b
+    4300006: hammer
+    4300008: gear c
+    4300010: gear a
+    4300012: drum
+    4300014: basicRig.Body
+    4300016: FOV.Camera Center
+    4300018: gun.001
+    4300020: drum.001
+    4300022: base
+    4300024: barrel.002
+    4300026: barrel.007
+    4300028: base.004
+    4300030: barrel.012
+    4300032: drum.004
+    4300034: Circle.002
+    4300036: Circle.003
+    4300038: Circle.001
+    4300040: Circle.000
+    4300042: Cylinder
+    7400000: frame|Action
+    7400002: frame|Action.001
+    7400004: frame|anim
+    7400006: frame|anim.010
+    7400008: frame|anim.015
+    7400010: frame|CircleAction.004
+    7400012: frame|CircleAction.006
+    7400014: frame|CircleAction.007
+    7400016: frame|CircleAction.008
+    7400018: frame|CylinderAction.001
+    7400020: frame|drum.001Action.006
+    7400022: frame|Empty.001Action.001
+    7400024: frame|fire
+    7400026: frame|gun.003Action
+    7400028: frame|gun.003Action.007
+    7400030: frame|idle_origin
+    7400032: frame|nr2
+    7400034: frame|origin.001
+    7400036: barrel|Action
+    7400038: barrel|Action.001
+    7400040: barrel|anim
+    7400042: barrel|anim.010
+    7400044: barrel|anim.015
+    7400046: barrel|CircleAction.004
+    7400048: barrel|CircleAction.006
+    7400050: barrel|CircleAction.007
+    7400052: barrel|CircleAction.008
+    7400054: barrel|CylinderAction.001
+    7400056: barrel|drum.001Action.006
+    7400058: barrel|Empty.001Action.001
+    7400060: barrel|fire
+    7400062: barrel|gun.003Action
+    7400064: barrel|gun.003Action.007
+    7400066: barrel|idle_origin
+    7400068: barrel|nr2
+    7400070: barrel|origin.001
+    7400072: gear b|Action
+    7400074: gear b|Action.001
+    7400076: gear b|anim
+    7400078: gear b|anim.010
+    7400080: gear b|anim.015
+    7400082: gear b|CircleAction.004
+    7400084: gear b|CircleAction.006
+    7400086: gear b|CircleAction.007
+    7400088: gear b|CircleAction.008
+    7400090: gear b|CylinderAction.001
+    7400092: gear b|drum.001Action.006
+    7400094: gear b|Empty.001Action.001
+    7400096: gear b|fire
+    7400098: gear b|gun.003Action
+    7400100: gear b|gun.003Action.007
+    7400102: gear b|idle_origin
+    7400104: gear b|nr2
+    7400106: gear b|origin.001
+    7400108: hammer|Action
+    7400110: hammer|Action.001
+    7400112: hammer|anim
+    7400114: hammer|anim.010
+    7400116: hammer|anim.015
+    7400118: hammer|CircleAction.004
+    7400120: hammer|CircleAction.006
+    7400122: hammer|CircleAction.007
+    7400124: hammer|CircleAction.008
+    7400126: hammer|CylinderAction.001
+    7400128: hammer|drum.001Action.006
+    7400130: hammer|Empty.001Action.001
+    7400132: hammer|fire
+    7400134: hammer|gun.003Action
+    7400136: hammer|gun.003Action.007
+    7400138: hammer|idle_origin
+    7400140: hammer|nr2
+    7400142: hammer|origin.001
+    7400144: gear c|Action
+    7400146: gear c|Action.001
+    7400148: gear c|anim
+    7400150: gear c|anim.010
+    7400152: gear c|anim.015
+    7400154: gear c|CircleAction.004
+    7400156: gear c|CircleAction.006
+    7400158: gear c|CircleAction.007
+    7400160: gear c|CircleAction.008
+    7400162: gear c|CylinderAction.001
+    7400164: gear c|drum.001Action.006
+    7400166: gear c|Empty.001Action.001
+    7400168: gear c|fire
+    7400170: gear c|gun.003Action
+    7400172: gear c|gun.003Action.007
+    7400174: gear c|idle_origin
+    7400176: gear c|nr2
+    7400178: gear c|origin.001
+    7400180: gear a|Action
+    7400182: gear a|Action.001
+    7400184: gear a|anim
+    7400186: gear a|anim.010
+    7400188: gear a|anim.015
+    7400190: gear a|CircleAction.004
+    7400192: gear a|CircleAction.006
+    7400194: gear a|CircleAction.007
+    7400196: gear a|CircleAction.008
+    7400198: gear a|CylinderAction.001
+    7400200: gear a|drum.001Action.006
+    7400202: gear a|Empty.001Action.001
+    7400204: gear a|fire
+    7400206: gear a|gun.003Action
+    7400208: gear a|gun.003Action.007
+    7400210: gear a|idle_origin
+    7400212: gear a|nr2
+    7400214: gear a|origin.001
+    7400216: drum|Action
+    7400218: drum|Action.001
+    7400220: drum|anim
+    7400222: drum|anim.010
+    7400224: drum|anim.015
+    7400226: drum|CircleAction.004
+    7400228: drum|CircleAction.006
+    7400230: drum|CircleAction.007
+    7400232: drum|CircleAction.008
+    7400234: drum|CylinderAction.001
+    7400236: drum|drum.001Action.006
+    7400238: drum|Empty.001Action.001
+    7400240: drum|fire
+    7400242: drum|gun.003Action
+    7400244: drum|gun.003Action.007
+    7400246: drum|idle_origin
+    7400248: drum|nr2
+    7400250: drum|origin.001
+    7400252: Fire
+    7400254: Pull Out
+    9500000: //RootNode
+    13700000: barrel
+    13700002: basicRig.Body
+    13700004: drum
+    13700006: frame
+    13700008: gear a
+    13700010: gear b
+    13700012: gear c
+    13700014: hammer
+    2186277476908879412: ImportLogs
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: base
+    second: {fileID: 2100000, guid: 405a6bc135b5b8149a5120d32926666d, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Fire
+      takeName: Arms HL2
+      firstFrame: 0
+      lastFrame: 30
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 0.45013478
+        functionName: SoundCock
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: d9be810f60007d3499e6d6225502dd44,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Pull Out
+      takeName: Arms HL2
+      firstFrame: 55
+      lastFrame: 92
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
